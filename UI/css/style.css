@@ -251,7 +251,8 @@ a:active {
     height: auto;
 }
 
-input,a,
+input,
+a,
 textarea {
     width: 100%;
     margin: 0;
@@ -277,7 +278,9 @@ select {
     -moz-appearance: none;
     appearance: none;
 }
-.center{
+
+.center {
     text-align: center;
 }
+
 /*tabs*/
