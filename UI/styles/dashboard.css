@@ -519,12 +519,12 @@ tr:nth-child(even) {
 }
 
 .rejected {
-    color: yellow;
+    color: #ffff00c4;
 }
 .acceptBtn {
-    background-color: yellow;
+    background-color: #ffff00c4;
 }
 .rejectBtn {
-    background-color: red;
+    background-color: #ff0000c9;
     color: white;
 }
