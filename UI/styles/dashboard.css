@@ -528,3 +528,9 @@ tr:nth-child(even) {
     background-color: #ff0000c9;
     color: white;
 }
+.floaterRight{
+    float: right;
+}
+.dashTableBtn:hover {
+    background-color: #cddc39ad;
+}
