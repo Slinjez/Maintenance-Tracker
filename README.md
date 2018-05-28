@@ -11,3 +11,4 @@ This is an application that provides users with the ability to reach out to oper
 - The user can view all his/her requests.
 
 # How to use this application
+- Navigate to https://slinjez.github.io/Maintenance-Tracker/UI
