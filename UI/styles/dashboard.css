@@ -355,6 +355,7 @@ a:active {
     /* border-radius: 13px; */
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    overflow-y: auto;
 }
 
 #content div {
@@ -445,14 +446,17 @@ tr:nth-child(even) {
 
 #content-1 {
     width: 100%;
+    overflow-y: scroll;
 }
 
 #content-2 {
     width: 100%;
+    overflow-y: scroll;
 }
 
 #content-3 {
     width: 100%;
+    overflow-y: scroll;
 }
 
 #container {
