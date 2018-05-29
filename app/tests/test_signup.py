@@ -8,20 +8,28 @@
 import unittest
 
 class TestSignup(unittest.TestCase):
-    def test_testUserNameNotBlank(self):
-        pass
+    def test_unername_blank(self):
+        result = signUp("","email@email","ps1","ps2")
+        self.assertEqual(result,'Please enter your preffered username')
+    def test_email_not_blank(self):
+        result = signUp("thename","","ps1","ps2")
+        self.assertEqual(result,'Please enter your email address')
     
-    def test_testEmailNotBlant(self):
-        pass
+    def test_password1_not_blank(self):
+        result = signUp("thename","email@email","","ps2")
+        self.assertEqual(result,'Please enter a password of choice')
+
+    def test_password2_not_blank(self):
+        result = signUp("thename","email@email","ps1","")
+        self.assertEqual(result,'Please confirm your password')
     
-    def test_testPasswordsNotBlank(self):
-        pass
+    def test_passwords_match(self):
+        result = signUp("thename","email@email","ps1","ps2")
+        self.assertEqual(result,'Your passwords mismatch, please try again')
     
-    def test_PasswordsMatch(self):
-        pass
-    
-    def test_testUserEmailIsNotAlreadyExisting(self):
-        pass
+    def test_user_email_isnot_registered(self):
+        result = signUpAction("thename","email@email","ps1","ps2")
+        self.assertEqual(result,'You have already registered with us. Please log in.')
 
 if __name__ == '__main__':
     unittest.main()
