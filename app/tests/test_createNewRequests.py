@@ -10,7 +10,7 @@ class TestCreateNewRequest(unittest.TestCase):
         result = createRequest("","request body","1","29 may 2018")
         self.assertEqual(result,'Please enter a title for your request')
     
-    def test_testMissingDescription(self):
+    def test__missing_description(self):
         result = createRequest("request title","","1","29 may 2018")
         self.assertEqual(result,'Please enter a brief description for your request')
 
