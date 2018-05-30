@@ -3,14 +3,18 @@
 1. when request id is invalid
 '''
 import unittest
+import requests
+import json
+import sys
 
 class TestGetSingleUserRequest(unittest.TestCase):
     
-    def test_testMissingRequest(self):
-        pass
+    def test_missing_request(self):
+        result = requests.get('http://127.0.0.1:5000/maintenance_tracker/api/v1/getSingleRequest/3')
+        self.assertEqual(
+            result.json(), {"requests": "No requests for this user"})
     
-    def test_testInvalidId(self):
-        pass
+    
     
     
 
