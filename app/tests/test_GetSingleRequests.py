@@ -3,16 +3,18 @@
 1. when request id is invalid
 '''
 import unittest
+import requests
+import json
+import sys
 
 class TestGetSingleUserRequest(unittest.TestCase):
     
     def test_missing_request(self):
-        result = getSingleRequest(2)
-        self.assertEqual(result,'This request may  have been deleted')
+        result = requests.get('http://127.0.0.1:5000/api/v1/getSingleRequest/3')
+        self.assertEqual(
+            result.json(), {"requests": "No requests for this user"})
     
-    def test_invalid_id_format(self):
-        result = getSingleRequest(two)
-        self.assertEqual(result,'This is an invalid request id. Use numbers')
+    
     
     
 
