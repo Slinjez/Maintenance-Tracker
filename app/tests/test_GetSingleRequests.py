@@ -6,11 +6,13 @@ import unittest
 
 class TestGetSingleUserRequest(unittest.TestCase):
     
-    def test_testMissingRequest(self):
-        pass
+    def test_missing_request(self):
+        result = getSingleRequest(2)
+        self.assertEqual(result,'This request may  have been deleted')
     
-    def test_testInvalidId(self):
-        pass
+    def test_invalid_id_format(self):
+        result = getSingleRequest(two)
+        self.assertEqual(result,'This is an invalid request id. Use numbers')
     
     
 

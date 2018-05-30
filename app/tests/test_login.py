@@ -8,17 +8,21 @@ import unittest
 
 class TestLogIn(unittest.TestCase):
     
-    def test_testEmailNotBlant(self):
-        pass
+    def test_email_not_blank(self):
+        result = logIn("","ps")
+        self.assertEqual(result,'Please enter your email address')
     
-    def test_testPasswordsNotBlank(self):
-        pass    
+    def test_password_not_blank(self):
+        result = logIn("email@emal","")
+        self.assertEqual(result,'Please enter your password')    
     
-    def test_testUserEmailIsExisting(self):
-        pass
+    def test_test_email_is_existing(self):
+        result = logIn("email@emal","ps")
+        self.assertEqual(result,'You have not registered. Please sign up')
     
-    def test_PasswordIsCorrect(self):
-        pass
+    def test_password_is_correct(self):
+        result = logIn("email@emal","ps")
+        self.assertEqual(result,'You have entered incorrect login details')
     
 
 if __name__ == '__main__':
