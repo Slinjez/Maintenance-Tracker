@@ -151,12 +151,12 @@ def getAllUnfilteredRequest():
 @app.route('/api/v1/users/requests', methods=['POST'])
 def createNewRequest():
     newrequest = {
-        "requestid": request.json['requestid'],
-        "requestorid": request.json['requestorid'],
-        "requesttitle": request.json['requesttitle'],
-        "requestdescription": request.json['requestdescription'],
-        "requestcreationdate": request.json['requestcreationdate'],
-        "requeststatus": request.json['requeststatus']
+        "requestid": request.json["requestid"],
+        "requestorid": request.json["requestorid"],
+        "requesttitle": request.json["requesttitle"],
+        "requestdescription": request.json["requestdescription"],
+        "requestcreationdate": request.json["requestcreationdate"],
+        "requeststatus": request.json["requeststatus"]
     }
 
     requests.append(newrequest)
