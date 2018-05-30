@@ -64,7 +64,7 @@ def login():
     pass
 
 
-@app.route('/api/v1/getAllRequests/<string:userid>', methods=['GET'])
+@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
 def getAllRequests(userid):
     if not userid or userid==None:
         userid=0
@@ -91,7 +91,7 @@ def getAllRequests(userid):
         response.status_code = 200
         return response
 
-@app.route('/api/v1/getSingleRequest/<string:requestid>', methods=['GET'])
+@app.route('/api/v1/users/request/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
     if not requestid or requestid==None:
         requestid=0
