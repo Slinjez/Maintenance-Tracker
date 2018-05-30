@@ -54,17 +54,17 @@ def index():
     return "will be back with the ui soon"
 
 
-@app.route('/maintenance_tracker/api/v1/signup', methods=['POST'])
+@app.route('/api/v1/signup', methods=['POST'])
 def signup():
     pass
 
 
-@app.route('/maintenance_tracker/api/v1/login', methods=['POST'])
+@app.route('/api/v1/login', methods=['POST'])
 def login():
     pass
 
 
-@app.route('/maintenance_tracker/api/v1/getAllRequests/<string:userid>', methods=['GET'])
+@app.route('/api/v1/getAllRequests/<string:userid>', methods=['GET'])
 def getAllRequests(userid):
     if not userid or userid==None:
         userid=0
@@ -91,7 +91,7 @@ def getAllRequests(userid):
         response.status_code = 200
         return response
 
-@app.route('/maintenance_tracker/api/v1/getSingleRequest/<string:requestid>', methods=['GET'])
+@app.route('/api/v1/getSingleRequest/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
     if not requestid or requestid==None:
         requestid=0

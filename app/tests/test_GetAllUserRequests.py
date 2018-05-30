@@ -12,7 +12,7 @@ import sys
 class TestGetAllUserRequests(unittest.TestCase):
 
     def test_client_with_no_request(self):
-        result = requests.get('http://127.0.0.1:5000/maintenance_tracker/api/v1/getAllRequests/3')
+        result = requests.get('http://127.0.0.1:5000/api/v1/getAllRequests/3')
         self.assertEqual(
             result.json(), {"requests": "No requests for this user"})
 
