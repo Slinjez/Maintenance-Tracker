@@ -91,8 +91,32 @@ def getAllRequests(userid):
         response.status_code = 200
         return response
 
-@app.route('/maintenance_tracker/api/v1/getAllRequests/<string:requestid>', methods=['GET'])
+@app.route('/maintenance_tracker/api/v1/getSingleRequest/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
+    if not requestid or requestid==None:
+        requestid=0
+    try:
+        if requestid is None or isinstance(int(requestid),int)==False:
+            response = jsonify({"requests": "You have entered an invalid reqest id"})
+            response.status_code = 404
+            return response
+        else:
+            requestid = int(requestid)
+    except:
+        response = jsonify({"requests": "You have entered an invalid request id"})
+        response.status_code = 405 #Method not allowed
+        return response
+
+    theRequests = [request for request in requests if request["requestid"] == requestid]
+
+    if not theRequests:
+        response = jsonify({"requests": "No requests for this request id"})
+        response.status_code = 200
+        return response
+    else:
+        response = jsonify({"requests": theRequests})
+        response.status_code = 200
+        return response
 
 
 if __name__ == '__main__':
