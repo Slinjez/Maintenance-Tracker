@@ -64,10 +64,12 @@ def login():
     pass
 
 
-@app.route('/maintenance_tracker/api/v1/getAllRequests/<int:userid>', methods=['GET'])
+@app.route('/maintenance_tracker/api/v1/getAllRequests/<string:userid>', methods=['GET'])
 def getAllRequests(userid):
+    if not userid or userid==None:
+        userid=0
     try:
-        if userid is None or isinstance(userid,int)==False:
+        if userid is None or isinstance(int(userid),int)==False:
             response = jsonify({"requests": "You have entered an invalid user id"})
             response.status_code = 200
             return response
@@ -88,6 +90,9 @@ def getAllRequests(userid):
         response = jsonify({"requests": theRequests})
         response.status_code = 200
         return response
+
+@app.route('/maintenance_tracker/api/v1/getAllRequests/<string:requestid>', methods=['GET'])
+def getSingleRequest(requestid):
 
 
 if __name__ == '__main__':
