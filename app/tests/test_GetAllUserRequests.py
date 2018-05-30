@@ -3,6 +3,7 @@
 2. test for request without user id
 '''
 import unittest
+#from ../../app.py import app #failed
 
 class TestGetAllUserRequests(unittest.TestCase):
     
