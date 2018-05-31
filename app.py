@@ -59,6 +59,7 @@ def signup():
     pass
 
 
+
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
     pass
@@ -160,7 +161,7 @@ def createNewRequest():
     }
 
     response=requests.append(newrequest)
-    response.status_code = 200
+    #response.status_code = 200
     return jsonify({"allrequests": requests})
 
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
