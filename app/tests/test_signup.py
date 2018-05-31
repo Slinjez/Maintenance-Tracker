@@ -46,29 +46,34 @@ class TestSignup(unittest.TestCase):
         "userpassword1": "apassword",
         "userpassword2": "forgot my password"
     }
-    def test_unername_blank(self,requestnousername):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(requestnousername), content_type='application/json')
-        assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "please enter a username"})
-    def test_email_not_blank(self,requestnoemail):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(requestnoemail), content_type='application/json')
-        assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "please enter an usermail"})
+    def test_unername_blank(self):
+        headers = {'content-type': 'application/json'}
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/signup',data=json.dumps(self.requestnousername), headers=headers)
+        #assert result.status_code == 200
+        self.assertEqual(result.json(), {"response": "please enter a username"})
+    def test_email_not_blank(self):
+        headers = {'content-type': 'application/json'}
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/signup',data=json.dumps(self.requestnoemail), headers=headers)
+        #assert result.status_code == 200
+        self.assertEqual(result.json(), {"response": "please enter an usermail"})
     
-    def test_password1_not_blank(self,requestnops1):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(requestnops1), content_type='application/json')
-        assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "please enter a password"})
+    def test_password1_not_blank(self):
+        headers = {'content-type': 'application/json'}
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/signup',data=json.dumps(self.requestnops1), headers=headers)
+        #assert result.status_code == 200
+        self.assertEqual(result.json(), {"response": "please enter a password"})
 
-    def test_password2_not_blank(self,requestnops2):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(requestnops2), content_type='application/json')
+    def test_password2_not_blank(self):
+        headers = {'content-type': 'application/json'}
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/signup',data=json.dumps(self.requestnops2), headers=headers)
         assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "please confirm your password"})
+        self.assertEqual(result.json(), {"response": "please confirm your password"})
     
-    def test_passwords_match(self,requestmissmatchps):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(requestmissmatchps), content_type='application/json')
+    def test_passwords_match(self):
+        headers = {'content-type': 'application/json'}
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
         assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "please enter matching passwords"})
+        self.assertEqual(result.json(), {"response": "please enter matching passwords"})
     
     
 if __name__ == '__main__':
