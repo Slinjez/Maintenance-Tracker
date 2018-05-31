@@ -1,18 +1,21 @@
 '''the tests should cover 
 1. test non existing request
-2. test request with wrong request id format
 '''
 import unittest
+import requests
+import json
+import sys
 
 class TestEditRequest(unittest.TestCase):
+    request = {
+        "requestid": 8
+    }
     
-    def test_unexisting_requestId(self):
-        result = editRequest(3)
-        self.assertEqual(result,"this request may have been deleted")
+    def test_unexisting_requestId(self,request):
+        result = requests.post('http://127.0.0.1:5000//api/v1/users/requests/',data=json.dumps(request), content_type='application/json')
+        assert result.status_code == 200
+        self.assertEqual(result.json(), {"requests": "Cannot edit this requests"})
         
-    def test_request_wrong_id_format(self):
-        result = editRequest('three')
-        self.assertEqual(result,"This request id is invalid")
     
     
 
