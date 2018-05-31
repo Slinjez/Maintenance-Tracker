@@ -159,7 +159,7 @@ def createNewRequest():
         "requeststatus": request.json["requeststatus"]
     }
 
-    requests.append(newrequest)
+    response=requests.append(newrequest)
     response.status_code = 200
     return jsonify({"allrequests": requests})
 
