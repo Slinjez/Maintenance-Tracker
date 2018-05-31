@@ -1,9 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
+#from flask.ext.session import Session
 import types
+import time
+import datetime
 import pdb
 #pdb.set_trace()
-
+#session['defaultuserid'] = 2
+#app.secret_key = 'any random string'
+defaultuserid = 2
 app = Flask(__name__)
+
 
 #some inits
 users = [
@@ -27,6 +33,7 @@ requests = [
         'requestorid': 1,
         'requesttitle': 'An Awesome Title',
         'requestdescription': 'This is my request description',
+        "requesttype": 1,
         'requestcreationdate': '30 may 2018',
         'requeststatus': 1
     },
@@ -35,6 +42,7 @@ requests = [
         'requestorid': 2,
         'requesttitle': 'A Lame Title',
         'requestdescription': 'This is my request description',
+        'requesttype': 2,
         'requestcreationdate': '30 may 2018',
         'requeststatus': 1
     },
@@ -43,6 +51,7 @@ requests = [
         'requestorid': 2,
         'requesttitle': 'A Better Title',
         'requestdescription': 'This is my request description',
+        'requesttype': 1,
         'requestcreationdate': '30 may 2018',
         'requeststatus': 1
     }
@@ -56,85 +65,88 @@ def index():
 
 @app.route('/api/v1/users/signup', methods=['POST'])
 def signup():
-    username=request.json["username"]
-    usermail=request.json["useremail"]
-    userps1=request.json["userpassword1"]
-    userps2=request.json["userpassword2"]
+    username = request.json["username"]
+    usermail = request.json["useremail"]
+    userps1 = request.json["userpassword1"]
+    userps2 = request.json["userpassword2"]
 
-    lastid=users[-1]["userid"]
+    lastid = users[-1]["userid"]
     #pdb.set_trace()
-    lastid+=1
+    lastid += 1
 
     if not username:
-        response=jsonify({"response": "please enter a username"})
+        response = jsonify({"response": "please enter a username"})
         response.status_code = 200
-        return response 
-    
+        return response
+
     elif not usermail:
         response = jsonify({"response": "please enter an usermail"})
         response.status_code = 200
-        return response 
-    
+        return response
+
     elif not userps1:
         response = jsonify({"response": "please enter a password"})
-        response.status_code=200
+        response.status_code = 200
         return response
-    
+
     elif not userps2:
         response = jsonify({"response": "please confirm your password"})
-        response.status_code=200
+        response.status_code = 200
         return response
-    
-    elif userps1!=userps2:
-        response=jsonify({"response": "please enter matching passwords"})
-        response.status_code=200
+
+    elif userps1 != userps2:
+        response = jsonify({"response": "please enter matching passwords"})
+        response.status_code = 200
         return response
 
     else:
         #pdb.set_trace()
         newsignuprequest = {
-        "userid": lastid,
-        "username": request.json["username"],
-        "useremail": request.json["useremail"],
-        "userpassword1": request.json["userpassword1"]
+            "userid": lastid,
+            "username": request.json["username"],
+            "useremail": request.json["useremail"],
+            "userpassword1": request.json["userpassword1"]
         }
         #check if new user
-        theRequests = [theuser for theuser in users if theuser["useremail"] == usermail] 
+        theRequests = [
+            theuser for theuser in users if theuser["useremail"] == usermail]
         if not theRequests:
             users.append(newsignuprequest)
-            response=jsonify({"response":"You have succesfully registered"})
+            response = jsonify({"response": "You have succesfully registered"})
             response.status_code = 200
         else:
-            response=jsonify({"response":"You have already been registered"})
+            response = jsonify(
+                {"response": "You have already been registered"})
             response.status_code = 200
         return response
 
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
-    
-    usermail=request.json["useremail"]
-    userps=request.json["userpassword"]
+
+    usermail = request.json["useremail"]
+    userps = request.json["userpassword"]
     #pdb.set_trace()
     if not usermail:
-        response=jsonify({"response": "email is required"})
+        response = jsonify({"response": "email is required"})
         response.status_code = 200
-        return response 
-    
+        return response
+
     elif not userps:
         response = jsonify({"response": "password is required"})
         response.status_code = 200
-        return response 
+        return response
     else:
-        theRequests = [theuser for theuser in users if theuser["useremail"] == usermail]
+        theRequests = [
+            theuser for theuser in users if theuser["useremail"] == usermail]
 
         if not theRequests:
             response = jsonify({"requests": "Unregistered email"})
             response.status_code = 200
             return response
         else:
-            correctps=theRequests[0]['userpassword']
-            if correctps!=userps:
+            correctps = theRequests[0]['userpassword']
+            if correctps != userps:
                 response = jsonify({"requests": "Unregistered email"})
                 response.status_code = 200
                 return response
@@ -142,13 +154,12 @@ def login():
                 response = jsonify({"requests": theRequests})
                 response.status_code = 200
                 return response
-        
-
-#all requests belonging to a user
 
 
-@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
-def getAllRequests(userid):
+#all requests belonging to a user defaultuserid
+#@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
+@app.route('/api/v1/users/requests', methods=['GET'])
+def getAllRequests(userid=defaultuserid):
     if not userid or userid == None:
         userid = 0
     try:
@@ -176,11 +187,9 @@ def getAllRequests(userid):
         response.status_code = 200
         return response
 
-#all request with given id
-
-
-@app.route('/api/v1/users/requestbyrequestid/<string:requestid>', methods=['GET'])
-def getSingleRequest(requestid):
+#one request for a given user
+@app.route('/api/v1/users/request/<string:requestid>', methods=['GET'])
+def getSingleRequest(requestid,userid=defaultuserid):
     if not requestid or requestid == None:
         requestid = 0
     try:
@@ -198,10 +207,10 @@ def getSingleRequest(requestid):
         return response
 
     theRequests = [
-        request for request in requests if request["requestid"] == requestid]
+        request for request in requests if request["requestid"] == requestid and request["requestorid"]==userid]
 
     if not theRequests:
-        response = jsonify({"requests": "No requests for this request id"})
+        response = jsonify({"requests": "This request does not belong to you"})
         response.status_code = 200
         return response
     else:
@@ -210,8 +219,6 @@ def getSingleRequest(requestid):
         return response
 
 #just all requests no order
-
-
 @app.route('/api/v1/users/requests', methods=['GET'])
 def getAllUnfilteredRequest():
 
@@ -227,26 +234,48 @@ def getAllUnfilteredRequest():
         return response
 
 #add request
-
-
 @app.route('/api/v1/users/requests', methods=['POST'])
-def createNewRequest():
-    newrequest = {
-        "requestid": request.json["requestid"],
-        "requestorid": request.json["requestorid"],
-        "requesttitle": request.json["requesttitle"],
-        "requestdescription": request.json["requestdescription"],
-        "requestcreationdate": request.json["requestcreationdate"],
-        "requeststatus": request.json["requeststatus"]
-    }
+def createNewRequest(defUsr=defaultuserid):
+    #requestid=request.json["requestid"]
+    #requestorid=request.json["requestorid"]
+    requestorid = defaultuserid
+    requesttitle = request.json["requesttitle"]
+    requestdescription = request.json["requestdescription"]
+    requesttype = request.json["requesttype"]
+    #requestcreationdate=request.json["requestcreationdate"]
+    requeststatus = 1
 
-    requests.append(newrequest)
-    #response.status_code = 200
-    return jsonify({"allrequests": requests})
+    lastreuestid = requests[-1]["requestid"]
+    #pdb.set_trace()
+    lastreuestid += 1
+
+    year = datetime.date.today().strftime("%Y")
+    month = datetime.date.today().strftime("%B")
+    day = datetime.date.today().strftime("%d")
+    requestcreationdate = str(day)+" "+str(month)+" "+str(year)
+
+    if not requesttitle:
+        return jsonify({"response": "Enter request title"})
+    elif not requestdescription:
+        return jsonify({"response": "Enter request description"})
+    elif not requesttype:
+        return jsonify({"response": "Select request type"})
+    else:
+        newrequest = {
+            "requestid": lastreuestid,
+            "requestorid": requestorid,
+            "requesttitle": requesttitle,
+            "requestdescription": requestdescription,
+            "requesttype": requesttype,
+            "requestcreationdate": requestcreationdate,
+            "requeststatus": requeststatus
+        }
+
+        requests.append(newrequest)
+        return jsonify({"response": "Created '"+requesttitle+"' request successfully"})
+
 
 #and finally edit a request
-
-
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
 def updateRequest(requestid):
     if not requestid or requestid == None:
@@ -265,16 +294,17 @@ def updateRequest(requestid):
         response.status_code = 405  # Method not allowed
         return response
 
-    theRequests = [
-        request for request in requests if request["requestid"] == requestid]
+    theRequests = [request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
-        response = jsonify({"requests": "Cannot edit this requests"})
+        response = jsonify({"respons": "Cannot edit this request"})
         response.status_code = 200
         return response
     else:
-        theRequests[0]['requestid'] = request.json['requestid']
-        response = jsonify({"requests": theRequests[0]})
+        #theRequests[0]['requestid'] = request.json['requestid']
+        theRequests[0]['requesttitle']=request.json['requesttitle']
+        theRequests[0]['requestdescription']=request.json['requestdescription']
+        response = jsonify({"requests": "request edited"})
         response.status_code = 200
         return response
 
