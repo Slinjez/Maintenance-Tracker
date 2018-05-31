@@ -6,23 +6,59 @@ import unittest
 import requests
 import json
 import sys
+import pdb
+# pdb.set_trace()
 
 
 class TestCreateNewRequest(unittest.TestCase):
-    request = {
-        "requestid": 8,
-        "requestorid": 3,
+    testvariable = {
         "requesttitle": "Just Another Awesome Title",
         "requestdescription": "This is not my request description",
-        "requestcreationdate": "31 may 2018",
-        "requeststatus": 1
+        "requesttype": 1
     }
-    #requestJson=jsonify({"therq":request})
+    testvariableNoTitle = {
+        "requesttitle": "",
+        "requestdescription": "This is not my request description",
+        "requesttype": 1
+    }
+    testvariableNoDescription = {
+        "requesttitle": "The title",
+        "requestdescription": "",
+        "requesttype": 1
+    }
+    testvariableNoType = {
+        "requesttitle": "The title",
+        "requesttype": None,#bet will never find out
+        "requestdescription": "The description"
+        
+    }
+    # requestJson=jsonify({"therq":request})
 
-    def test_missing_request_title(self,request):
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(request), content_type='application/json')
-        assert result.status_code == 200
-        self.assertEqual(result.json(), {"requests": "Please enter request title"})
+    def test_missing_request_title(self):
+        headers = {'content-type': 'application/json'}
+
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',
+                               data=json.dumps(self.testvariableNoTitle), headers=headers)
+        # pdb.set_trace()
+        self.assertEqual(
+            result.json(), {"response": "Enter request title"})
+    def test_missing_request_description(self):
+        headers = {'content-type': 'application/json'}
+
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',
+                               data=json.dumps(self.testvariableNoDescription), headers=headers)
+        # pdb.set_trace()
+        self.assertEqual(
+            result.json(), {"response": "Enter request description"})
+
+    def test_missing_request_type(self):
+        headers = {'content-type': 'application/json'}
+
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',
+                               data=json.dumps(self.testvariableNoType), headers=headers)
+        # pdb.set_trace()
+        self.assertEqual(
+            result.json(), {"response": "Select request type"})
 
 
 if __name__ == '__main__':
