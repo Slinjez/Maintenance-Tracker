@@ -159,9 +159,38 @@ def createNewRequest():
         "requeststatus": request.json["requeststatus"]
     }
 
-    requests.append(newrequest)
+    response=requests.append(newrequest)
     response.status_code = 200
     return jsonify({"allrequests": requests})
+
+@app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
+def updateRequest(requestid):
+    if not requestid or requestid == None:
+        requestid = 0
+    try:
+        if requestid is None or isinstance(int(requestid), int) == False:
+            response = jsonify(
+                {"requests": "You have entered an invalid request id"})
+            response.status_code = 200
+            return response
+        else:
+            requestid = int(requestid)
+    except:
+        response = jsonify({"requests": "You have entered an invalid request id"})
+        response.status_code = 405  # Method not allowed
+        return response
+
+    theRequests = [request for request in requests if request["requestid"] == requestid]
+
+    if not theRequests:
+        response = jsonify({"requests": "Cannot edit this requests"})
+        response.status_code = 200
+        return response
+    else:
+        theRequests[0]['requestid']=request.json['requestid']
+        response = jsonify({"requests": theRequests[0]})
+        response.status_code = 200
+        return response
 
 
 if __name__ == '__main__':
