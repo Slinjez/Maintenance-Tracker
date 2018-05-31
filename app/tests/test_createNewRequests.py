@@ -9,6 +9,7 @@ import sys
 
 
 class TestCreateNewRequest(unittest.TestCase):
+
     request = {
         "requestid": 8,
         "requestorid": 3,
