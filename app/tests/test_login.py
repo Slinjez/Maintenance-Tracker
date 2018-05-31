@@ -29,32 +29,36 @@ class TestLogIn(unittest.TestCase):
     }
     requestbadpassword = {
         "useremail": "mwangiwathiga@gmail.com",
-        "userpassword": "myps"
+        "userpassword": "mypss"
     }
 
-    def test_email_not_blank(self, requestnoemail):
+    def test_email_not_blank(self):
+        headers = {'content-type': 'application/json'}
         result = requests.post('http://127.0.0.1:5000/api/v1/users/login',
-                               data=json.dumps(requestnoemail), content_type='application/json')
-        assert result.status_code == 200
+                               data=json.dumps(self.requestnoemail), headers=headers)
+        #assert result.status_code == 200
         self.assertEqual(result.json(), {"response": "email is required"})
 
-    def test_password_not_blank(self, requestnopassword):
+    def test_password_not_blank(self):
+        headers = {'content-type': 'application/json'}
         result = requests.post('http://127.0.0.1:5000/api/v1/users/login',
-                               data=json.dumps(requestnopassword), content_type='application/json')
-        assert result.status_code == 200
+                               data=json.dumps(self.requestnopassword), headers=headers)
+        #assert result.status_code == 200
         self.assertEqual(result.json(), {"response": "password is required"})
 
-    def test_test_email_is_existing(self, requestnotexisting):
+    def test_test_email_is_existing(self):
+        headers = {'content-type': 'application/json'}
         result = requests.post('http://127.0.0.1:5000/api/v1/users/login',
-                               data=json.dumps(requestnotexisting), content_type='application/json')
-        assert result.status_code == 200
+                               data=json.dumps(self.requestnotexisting), headers=headers)
+        #assert result.status_code == 200
         self.assertEqual(
-            result.json(), {"response": "email is not registered"})
+            result.json(), {"response": "Unregistered email"})
 
-    def test_password_is_correct(self, requestbadpassword):
+    def test_password_is_correct(self):
+        headers = {'content-type': 'application/json'}
         result = requests.post('http://127.0.0.1:5000/api/v1/users/login',
-                               data=json.dumps(requestbadpassword), content_type='application/json')
-        assert result.status_code == 200
+                               data=json.dumps(self.requestbadpassword), headers=headers)
+        #assert result.status_code == 200
         self.assertEqual(result.json(), {"response": "Invalid credentials"})
 
 
