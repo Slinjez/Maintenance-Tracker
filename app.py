@@ -187,30 +187,32 @@ def getAllRequests(userid=defaultuserid):
         response.status_code = 200
         return response
 
-#one request for a given user
-@app.route('/api/v1/users/request/<string:requestid>', methods=['GET'])
-def getSingleRequest(requestid,userid=defaultuserid):
-    if not requestid or requestid == None:
-        requestid = 0
+#one request for a given user (enter from url)
+@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
+#def getSingleRequest(requestid,userid=defaultuserid):
+def getSingleRequest(userid):
+    #requestid = request.json["requestid"]
+    if not userid or userid == None:
+        userid = 0
     try:
-        if requestid is None or isinstance(int(requestid), int) == False:
+        if userid is None or isinstance(int(userid), int) == False:
             response = jsonify(
-                {"requests": "You have entered an invalid reqest id"})
+                {"requests": "You have entered an invalid user id"})
             response.status_code = 404
             return response
         else:
-            requestid = int(requestid)
+            userid = int(userid)
     except:
         response = jsonify(
-            {"requests": "You have entered an invalid request id"})
+            {"requests": "You have entered an invalid user id"})
         response.status_code = 405  # Method not allowed
         return response
 
     theRequests = [
-        request for request in requests if request["requestid"] == requestid and request["requestorid"]==userid]
+        request for request in requests if request["requestorid"]==userid]
 
     if not theRequests:
-        response = jsonify({"requests": "This request does not belong to you"})
+        response = jsonify({"requests": "This user has no requests"})
         response.status_code = 200
         return response
     else:
