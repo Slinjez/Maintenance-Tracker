@@ -141,17 +141,17 @@ def login():
             theuser for theuser in users if theuser["useremail"] == usermail]
 
         if not theRequests:
-            response = jsonify({"requests": "Unregistered email"})
+            response = jsonify({"response": "Unregistered email"})
             response.status_code = 200
             return response
         else:
             correctps = theRequests[0]['userpassword']
             if correctps != userps:
-                response = jsonify({"requests": "Unregistered email"})
+                response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 200
                 return response
             else:
-                response = jsonify({"requests": theRequests})
+                response = jsonify({"response": "logged in correctly"})
                 response.status_code = 200
                 return response
 
