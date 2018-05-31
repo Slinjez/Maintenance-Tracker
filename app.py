@@ -56,8 +56,52 @@ def index():
 
 @app.route('/api/v1/users/signup', methods=['POST'])
 def signup():
-    pass
+    username=request.json["username"]
+    usermail=request.json["useremail"]
+    userps1=request.json["userpassword1"]
+    userps2=request.json["userpassword2"]
 
+    lastid=users[-1]["userid"]
+    #pdb.set_trace()
+    lastid+=1
+
+    if not username:
+        response=jsonify({"response": "please enter a username"})
+        response.status_code = 200
+        return response 
+    
+    elif not usermail:
+        response = jsonify({"response": "please enter an usermail"})
+        response.status_code = 200
+        return response 
+    
+    elif not userps1:
+        response = jsonify({"response": "please enter a password"})
+        response.status_code=200
+        return response
+    
+    elif not userps2:
+        response = jsonify({"response": "please confirm your password"})
+        response.status_code=200
+        return response
+    
+    elif userps1!=userps2:
+        response=jsonify({"response": "please enter matching passwords"})
+        response.status_code=200
+        return response
+
+    else:
+        #pdb.set_trace()
+        newsignuprequest = {
+        "userid": lastid,
+        "username": request.json["username"],
+        "useremail": request.json["useremail"],
+        "userpassword1": request.json["userpassword1"]
+        }
+        users.append(newsignuprequest)
+        response=jsonify({"response":users})
+        response.status_code = 200
+        return response
 
 
 @app.route('/api/v1/users/login', methods=['POST'])
@@ -160,9 +204,12 @@ def createNewRequest():
         "requeststatus": request.json["requeststatus"]
     }
 
-    response=requests.append(newrequest)
+    requests.append(newrequest)
     #response.status_code = 200
     return jsonify({"allrequests": requests})
+
+#and finally edit a request
+
 
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
 def updateRequest(requestid):
@@ -177,18 +224,20 @@ def updateRequest(requestid):
         else:
             requestid = int(requestid)
     except:
-        response = jsonify({"requests": "You have entered an invalid request id"})
+        response = jsonify(
+            {"requests": "You have entered an invalid request id"})
         response.status_code = 405  # Method not allowed
         return response
 
-    theRequests = [request for request in requests if request["requestid"] == requestid]
+    theRequests = [
+        request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
         response = jsonify({"requests": "Cannot edit this requests"})
         response.status_code = 200
         return response
     else:
-        theRequests[0]['requestid']=request.json['requestid']
+        theRequests[0]['requestid'] = request.json['requestid']
         response = jsonify({"requests": theRequests[0]})
         response.status_code = 200
         return response
