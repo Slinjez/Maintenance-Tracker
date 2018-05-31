@@ -98,15 +98,51 @@ def signup():
         "useremail": request.json["useremail"],
         "userpassword1": request.json["userpassword1"]
         }
-        users.append(newsignuprequest)
-        response=jsonify({"response":users})
-        response.status_code = 200
+        #check if new user
+        theRequests = [theuser for theuser in users if theuser["useremail"] == usermail] 
+        if not theRequests:
+            users.append(newsignuprequest)
+            response=jsonify({"response":"You have succesfully registered"})
+            response.status_code = 200
+        else:
+            response=jsonify({"response":"You have already been registered"})
+            response.status_code = 200
         return response
 
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
-    pass
+    
+    usermail=request.json["useremail"]
+    userps=request.json["userpassword"]
+    #pdb.set_trace()
+    if not usermail:
+        response=jsonify({"response": "email is required"})
+        response.status_code = 200
+        return response 
+    
+    elif not userps:
+        response = jsonify({"response": "password is required"})
+        response.status_code = 200
+        return response 
+    else:
+        theRequests = [theuser for theuser in users if theuser["useremail"] == usermail]
+
+        if not theRequests:
+            response = jsonify({"requests": "Unregistered email"})
+            response.status_code = 200
+            return response
+        else:
+            correctps=theRequests[0]['userpassword']
+            if correctps!=userps:
+                response = jsonify({"requests": "Unregistered email"})
+                response.status_code = 200
+                return response
+            else:
+                response = jsonify({"requests": theRequests})
+                response.status_code = 200
+                return response
+        
 
 #all requests belonging to a user
 
