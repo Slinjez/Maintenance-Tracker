@@ -20,7 +20,8 @@ class TestCreateNewRequest(unittest.TestCase):
     #requestJson=jsonify({"therq":request})
 
     def test_missing_request_title(self,request):
-        result = requests.post('http://127.0.0.1:5000//api/v1/users/requests',data=json.dumps(request), content_type='application/json')
+        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',data=json.dumps(request), content_type='application/json')
+        assert result.status_code == 200
         self.assertEqual(result.json(), {"requests": "Please enter request title"})
 
 
