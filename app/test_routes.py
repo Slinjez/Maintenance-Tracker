@@ -1,8 +1,10 @@
 import sys
 import unittest
+import os
 import json
-import routes 
-import requests
+#from flask import request
+from app import routes 
+
 
 
 
@@ -20,6 +22,9 @@ class MaintenanceTrackerTest(unittest.TestCase):
         """
         Test if user is created successfully through the endpoint
         """                       
-        result = requests.post('/api/v1/users/',data=json.dumps(self.requestnoemail)
+        result = routes.signup('/api/v1/users/',data=json.dumps(self.requestnoemail)
                                        ,content_type='application/json')
-        self.assertEqual(result.json(),{"response": "email is required"})            
+        self.assertEqual(result.json(),{"response": "email is required"})  
+
+if __name__ == "__main__":
+    unittest.main()          

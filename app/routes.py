@@ -1,12 +1,12 @@
-from flask import Flask
 
+from app import app
 from flask import jsonify, request, session
 import types
 import time
 import datetime
 import pdb
 
-app = Flask(__name__)
+
 
 defaultuserid = 2
 
@@ -325,4 +325,3 @@ def updateRequest(requestid):
             return response
 
 
-app.run(debug=True)

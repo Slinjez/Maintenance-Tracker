@@ -1,4 +1,4 @@
-from app import routes
+from app import app
 
 
 
