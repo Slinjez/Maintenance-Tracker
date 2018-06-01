@@ -9,7 +9,6 @@ import pdb
 defaultuserid = 2
 
 
-
 #some inits
 users = [
     {
@@ -39,7 +38,7 @@ requests = [
     {
         'requestid': 2,
         'requestorid': 2,
-        'requesttitle': 'A Lame Title',
+        'requesttitle': 'Test hack',
         'requestdescription': 'This is my request description',
         'requesttype': 2,
         'requestcreationdate': '30 may 2018',
@@ -57,11 +56,10 @@ requests = [
 ]
 
 
-
-
 @app.route('/')
 def index():
     return "will be back with the ui soon(runpy)"
+
 
 @app.route('/api/v1/users/signup', methods=['POST'])
 def signup():
@@ -120,6 +118,7 @@ def signup():
             response.status_code = 200
         return response
 
+
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
 
@@ -145,7 +144,8 @@ def login():
             return response
         else:
             correctps = theRequests[0]['userpassword']
-            userid=theRequests[0]['userid']
+            userid = theRequests[0]['userid']
+            #pdb.set_trace()
             if correctps != userps:
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 200
@@ -153,12 +153,16 @@ def login():
             else:
                 response = jsonify({"response": "logged in correctly"})
                 response.status_code = 200
-                self.defaultuserid=userid
+                defaultuserid = userid
+                #pdb.set_trace()
                 return response
+
 
 #all requests belonging to a user defaultuserid
 @app.route('/api/v1/users/requests', methods=['GET'])
-def getAllRequests(userid=defaultuserid):
+def getAllRequests():
+    userid = defaultuserid
+    #pdb.set_trace()
     if not userid or userid == None:
         userid = 0
     try:
@@ -182,11 +186,13 @@ def getAllRequests(userid=defaultuserid):
         response.status_code = 200
         return response
     else:
-        response = jsonify({"all requests for user "+userid: theRequests})
+        response = jsonify({"all requests for user "+str(userid): theRequests})
         response.status_code = 200
         return response
 
 #one request for a given user (enter from url)
+
+
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
     if not requestid or requestid == None:
@@ -194,30 +200,32 @@ def getSingleRequest(requestid):
     try:
         if requestid is None or isinstance(int(requestid), int) == False:
             response = jsonify(
-                {"requests": "You have entered an invalid requesting id"})
+                {"response": "You have entered an invalid requesting id"})
             response.status_code = 404
             return response
         else:
             requestid = int(requestid)
     except:
         response = jsonify(
-            {"requests": "You have entered an invalid request id"})
+            {"response": "You have entered an invalid request id"})
         response.status_code = 405  # Method not allowed
         return response
 
     theRequests = [
-        request for request in requests if request["requestid"]==requestid]
+        request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
-        response = jsonify({"requests": "This request does not exist"})
+        response = jsonify({"response": "This request does not exist"})
         response.status_code = 200
         return response
     else:
-        response = jsonify({"specific requests": theRequests})
+        response = jsonify({"specific response": theRequests})
         response.status_code = 200
         return response
 
 #add request
+
+
 @app.route('/api/v1/users/requests', methods=['POST'])
 def createNewRequest(defUsr=defaultuserid):
     #requestid=request.json["requestid"]
@@ -259,6 +267,8 @@ def createNewRequest(defUsr=defaultuserid):
         return jsonify({"response": "Created '"+requesttitle+"' request successfully"})
 
 #and finally edit a request
+
+
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
 def updateRequest(requestid):
     if not requestid or requestid == None:
@@ -277,17 +287,36 @@ def updateRequest(requestid):
         response.status_code = 405  # Method not allowed
         return response
 
-    theRequests = [request for request in requests if request["requestid"] == requestid]
+    theRequests = [
+        request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
-        response = jsonify({"respons": "Cannot edit this request"})
+        response = jsonify({"response": "Cannot edit this request"})
         response.status_code = 200
         return response
     else:
-        #theRequests[0]['requestid'] = request.json['requestid']
-        theRequests[0]['requesttitle']=request.json['requesttitle']
-        theRequests[0]['requestdescription']=request.json['requestdescription']
-        response = jsonify({"requests": "request edited"})
-        response.status_code = 200
-        return response
-
+        thenewtitle = request.json['requesttitle']
+        thenewdescription = request.json['requestdescription']
+        thenewrequestrequesttype = request.json['requesttype']
+        if not thenewtitle:
+            response = jsonify({"response": "Enter new title"})
+            response.status_code = 200
+            return response
+        elif not thenewdescription:
+            response = jsonify({"response": "Enter new description"})
+            response.status_code = 200
+            return response
+        elif not thenewrequestrequesttype:
+            response = jsonify({"response": "Enter new request type"})
+            response.status_code = 200
+            return response
+        elif isinstance(thenewrequestrequesttype, int) == False:
+            response = jsonify({"response": "Enter integer as request type"})
+            response.status_code = 200
+            return response
+        else:
+            theRequests[0]['requesttitle'] = request.json['requesttitle']
+            theRequests[0]['requestdescription'] = request.json['requestdescription']
+            response = jsonify({"response": "request edited"})
+            response.status_code = 200
+            return response
