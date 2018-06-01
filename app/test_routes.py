@@ -1,12 +1,13 @@
-from app import app
+from app import routes
+from flask import current_app, json, url_for
 import unittest
-import json
+
 
 
 class MaintenanceTrackerApiTest(unittest.TestCase):
 
     def setUp(self):
-        self.app = app.test_client()
+        self.app = routes.test_client()
         self.request = {
 
             'requestid': 1,
