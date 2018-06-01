@@ -11,3 +11,9 @@ This is an application that provides users with the ability to reach out to oper
 - The user can view all his/her requests.
 
 # How to use this application
+
+
+# Badges
+[![Coverage Status](https://coveralls.io/repos/github/Slinjez/Maintenance-Tracker/badge.svg?branch=master)](https://coveralls.io/github/Slinjez/Maintenance-Tracker?branch=master)
+
+[![Build Status](https://travis-ci.org/Slinjez/Maintenance-Tracker.svg?branch=develop)](https://travis-ci.org/Slinjez/Maintenance-Tracker)
