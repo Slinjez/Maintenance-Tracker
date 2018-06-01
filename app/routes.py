@@ -151,9 +151,10 @@ def login():
                 response.status_code = 200
                 return response
             else:
-                response = jsonify({"response": "logged in correctly"})
-                response.status_code = 200
+                
                 defaultuserid = userid
+                response = jsonify({"response": "user "+defaultuserid+" logged in correctly"})
+                response.status_code = 200
                 #pdb.set_trace()
                 return response
 
