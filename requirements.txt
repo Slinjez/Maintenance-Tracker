@@ -39,7 +39,6 @@ pypiwin32==223
 python-dateutil==2.7.2
 python-editor==1.0.3
 pytz==2018.3
-pywin32==223
 requests==2.18.4
 setuptools-scm==1.17.0
 six==1.11.0
