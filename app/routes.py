@@ -1,10 +1,12 @@
-from app import app
+from flask import Flask
+
 from flask import jsonify, request, session
 import types
 import time
 import datetime
 import pdb
 
+app = Flask(__name__)
 
 defaultuserid = 2
 
@@ -58,7 +60,7 @@ requests = [
 
 @app.route('/')
 def index():
-    return "will be back with the ui soon(runpy)"
+    return "will be back with the ui soon"
 
 
 @app.route('/api/v1/users/signup', methods=['POST'])
@@ -321,3 +323,6 @@ def updateRequest(requestid):
             response = jsonify({"response": "request edited"})
             response.status_code = 200
             return response
+
+
+app.run(debug=True)
