@@ -157,7 +157,6 @@ def login():
 
 
 #all requests belonging to a user defaultuserid
-#@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
 @app.route('/api/v1/users/requests', methods=['GET'])
 def getAllRequests(userid=defaultuserid):
     if not userid or userid == None:
@@ -180,7 +179,7 @@ def getAllRequests(userid=defaultuserid):
 
     if not theRequests:
         response = jsonify({"requests": "No requests for this user"})
-        response.status_code = 200
+        response.status_code = 404
         return response
     else:
         response = jsonify({"requests": theRequests})
@@ -188,6 +187,8 @@ def getAllRequests(userid=defaultuserid):
         return response
 
 #one request for a given user (enter from url)
+
+
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
     if not requestid or requestid == None:
@@ -208,7 +209,7 @@ def getSingleRequest(requestid):
         return response
 
     theRequests = [
-        request for request in requests if request["requestid"]==requestid]
+        request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
         response = jsonify({"requests": "This request does not exist"})
@@ -219,20 +220,6 @@ def getSingleRequest(requestid):
         response.status_code = 200
         return response
 
-#just all requests no order
-@app.route('/api/v1/users/requests', methods=['GET'])
-def getAllUnfilteredRequest():
-
-    theRequests = [request for request in requests]
-
-    if not theRequests:
-        response = jsonify({"requests": "No requests os for now"})
-        response.status_code = 200
-        return response
-    else:
-        response = jsonify({"requests": theRequests})
-        response.status_code = 200
-        return response
 
 #add request
 @app.route('/api/v1/users/requests', methods=['POST'])
@@ -285,29 +272,43 @@ def updateRequest(requestid):
         if requestid is None or isinstance(int(requestid), int) == False:
             response = jsonify(
                 {"requests": "You have entered an invalid request id"})
-            response.status_code = 200
+            response.status_code = 400
             return response
         else:
             requestid = int(requestid)
     except:
         response = jsonify(
             {"requests": "You have entered an invalid request id"})
-        response.status_code = 405  # Method not allowed
+        response.status_code = 400
         return response
 
-    theRequests = [request for request in requests if request["requestid"] == requestid]
+    theRequests = [
+        request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
         response = jsonify({"respons": "Cannot edit this request"})
         response.status_code = 200
         return response
     else:
-        #theRequests[0]['requestid'] = request.json['requestid']
-        theRequests[0]['requesttitle']=request.json['requesttitle']
-        theRequests[0]['requestdescription']=request.json['requestdescription']
-        response = jsonify({"requests": "request edited"})
-        response.status_code = 200
-        return response
+        requesttytle = request.json['requesttitle']
+        reqdescription = request.json['requestdescription']
+
+        if not requesttytle:
+            response = jsonify({"response": "Enter request id"})
+            response.status_code = 400
+            return response
+
+        elif not reqdescription:
+            response = jsonify({"response": "Enter request description"})
+            response.status_code = 400
+            return response
+
+        else:
+            theRequests[0]['requesttitle'] = request.json['requesttitle']
+            theRequests[0]['requestdescription'] = request.json['requestdescription']
+            response = jsonify({"requests": "request edited"})
+            response.status_code = 200
+            return response
 
 
 if __name__ == '__main__':
