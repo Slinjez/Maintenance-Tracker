@@ -79,6 +79,11 @@ def signup():
         response.status_code = 400
         return response
 
+    elif len(userps1)<=3:
+        response = jsonify({"response": "Enter a password more than 4 charachters"})
+        response.status_code = 400
+        return response
+
     elif not usermail:
         response = jsonify({"response": "please enter an usermail"})
         response.status_code = 400
@@ -129,6 +134,11 @@ def login():
     #pdb.set_trace()
     if not usermail:
         response = jsonify({"response": "email is required"})
+        response.status_code = 400
+        return response
+
+    elif len(userps)<=3:
+        response = jsonify({"response": "Enter a password more than 4 charachters"})
         response.status_code = 400
         return response
 
