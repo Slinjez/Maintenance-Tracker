@@ -1,0 +1,11 @@
+[
+  "app/tests/test_login.py::TestLogIn::test_email_not_blank",
+  "app/tests/test_login.py::TestLogIn::test_password_is_correct",
+  "app/tests/test_login.py::TestLogIn::test_password_not_blank",
+  "app/tests/test_login.py::TestLogIn::test_test_email_is_existing",
+  "app/tests/test_signup.py::TestSignup::test_email_not_blank",
+  "app/tests/test_signup.py::TestSignup::test_password1_not_blank",
+  "app/tests/test_signup.py::TestSignup::test_password2_not_blank",
+  "app/tests/test_signup.py::TestSignup::test_passwords_match",
+  "app/tests/test_signup.py::TestSignup::test_unername_blank"
+]
