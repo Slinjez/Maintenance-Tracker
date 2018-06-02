@@ -76,27 +76,27 @@ def signup():
 
     if not username:
         response = jsonify({"response": "please enter a username"})
-        response.status_code = 200
+        response.status_code = 404
         return response
 
     elif not usermail:
         response = jsonify({"response": "please enter an usermail"})
-        response.status_code = 200
+        response.status_code = 404
         return response
 
     elif not userps1:
         response = jsonify({"response": "please enter a password"})
-        response.status_code = 200
+        response.status_code = 404
         return response
 
     elif not userps2:
         response = jsonify({"response": "please confirm your password"})
-        response.status_code = 200
+        response.status_code = 400
         return response
 
     elif userps1 != userps2:
         response = jsonify({"response": "please enter matching passwords"})
-        response.status_code = 200
+        response.status_code = 400
         return response
 
     else:
@@ -129,12 +129,12 @@ def login():
     #pdb.set_trace()
     if not usermail:
         response = jsonify({"response": "email is required"})
-        response.status_code = 200
+        response.status_code = 400
         return response
 
     elif not userps:
         response = jsonify({"response": "password is required"})
-        response.status_code = 200
+        response.status_code = 400
         return response
     else:
         theRequests = [
@@ -142,13 +142,13 @@ def login():
 
         if not theRequests:
             response = jsonify({"response": "Unregistered email"})
-            response.status_code = 200
+            response.status_code = 400
             return response
         else:
             correctps = theRequests[0]['userpassword']
             if correctps != userps:
                 response = jsonify({"response": "Invalid credentials"})
-                response.status_code = 200
+                response.status_code = 400
                 return response
             else:
                 response = jsonify({"response": "logged in correctly"})
