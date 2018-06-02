@@ -148,7 +148,7 @@ def login():
             correctps = theRequests[0]['userpassword']
             if correctps != userps:
                 response = jsonify({"response": "Invalid credentials"})
-                response.status_code = 200
+                response.status_code = 400
                 return response
             else:
                 response = jsonify({"response": "logged in correctly"})

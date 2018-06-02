@@ -58,10 +58,10 @@ class TestLogIn(unittest.TestCase):
 
     def test_password_is_correct(self):
         headers = {'content-type': 'application/json'}
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/login',
-                               data=json.dumps(self.requestbadpassword), headers=headers)
-        #assert result.status_code == 200
-        self.assertEqual(result.json(), {"response": "Invalid credentials"})
+        with app.test_client() as c:
+            result =c.post('/api/v1/users/login',data=json.dumps(self.requestbadpassword),headers=headers)
+            self.assertEqual(result.status_code,400)
+            self.assertEqual(result.json(), {"response": "Invalid credentials"})
 
 
 if __name__ == '__main__':
