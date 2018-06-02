@@ -76,17 +76,17 @@ def signup():
 
     if not username:
         response = jsonify({"response": "please enter a username"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not usermail:
         response = jsonify({"response": "please enter an usermail"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not userps1:
         response = jsonify({"response": "please enter a password"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not userps2:
