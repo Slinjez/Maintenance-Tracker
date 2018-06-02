@@ -47,22 +47,20 @@ class TestCreateNewRequest(unittest.TestCase):
             self.assertEqual(result.status_code, 404)
 
     def test_missing_request_description(self):
-        headers = {'content-type': 'application/json'}
-
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',
-                               data=json.dumps(self.testvariableNoDescription), headers=headers)
-        # pdb.set_trace()
-        self.assertEqual(
-            result.json(), {"response": "Enter request description"})
+        headers = {'content-type': 'application/json'} 
+        with app.test_client() as c:
+            result = c.post('/api/v1/users/requests/',
+                           data=json.dumps(self.testvariableNoDescription), headers=headers)
+            self.assertEqual(result.status_code, 404)
 
     def test_missing_request_type(self):
         headers = {'content-type': 'application/json'}
-
-        result = requests.post('http://127.0.0.1:5000/api/v1/users/requests',
-                               data=json.dumps(self.testvariableNoType), headers=headers)
-        # pdb.set_trace()
-        self.assertEqual(
-            result.json(), {"response": "Select request type"})
+        with app.test_client() as c:
+            result = c.post('/api/v1/users/requests/',
+                           data=json.dumps(self.testvariableNoType), headers=headers)
+            self.assertEqual(result.status_code, 404)
+        
+        
 
 
 if __name__ == '__main__':
