@@ -1,4 +1,8 @@
 [
+  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest::test_empty_id",
+  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest::test_good_id",
+  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest::test_invalid_id",
+  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest::test_missing_request",
   "app/tests/test_login.py::TestLogIn::test_email_not_blank",
   "app/tests/test_login.py::TestLogIn::test_password_is_correct",
   "app/tests/test_login.py::TestLogIn::test_password_not_blank",

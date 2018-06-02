@@ -1,21 +1,49 @@
-# '''the tests should cover 
-# 1. when the request is missing
-# '''
-# import unittest
-# import requests
-# import json
-# import sys
+'''the tests should cover 
+1. when the request is missing
+'''
+from app import app
+import unittest
+from flask import request
+import json
+import sys
 
-# class TestGetSingleUserRequest(unittest.TestCase):
+class TestGetSingleUserRequest(unittest.TestCase):
+    def setup(self):
+        app=flask.Flask(__name__)
+
+    requestnotexisting=8
+    requestinvalid="R" 
+    requestempty=None
+    requestgood=2
+
     
-#     def test_missing_request(self):
-#         result = requests.get('http://127.0.0.1:5000/api/v1/users/request/3')
-#         self.assertEqual(
-#             result.json(), {"requests": "No requests for this user"})
+    def test_missing_request(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('api/v1/users/request/',data=json.dumps(self.requestnotexisting),headers=headers)
+            self.assertEqual(result.status_code,404)
+    
+    def test_invalid_id(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('api/v1/users/request/',data=self.requestinvalid,headers=headers)
+            self.assertEqual(result.status_code,404)
+
+    def test_empty_id(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('api/v1/users/request/',data=self.requestempty,headers=headers)
+            self.assertEqual(result.status_code,404)
+    
+    # def test_good_id(self):
+    #     headers = {'content-type': 'application/json'}
+    #     with app.test_client() as c:
+    #         result =c.post('api/v1/users/request/',data=json.dumps(self.requestgood),headers=headers)
+    #         self.assertEqual(result.status_code,200)
     
     
     
     
 
-# if __name__ == '__main__':
-#     unittest.main()
+if __name__ == '__main__':
+    unittest.main()
