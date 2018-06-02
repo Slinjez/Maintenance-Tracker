@@ -1,17 +1,26 @@
 # '''the tests should cover 
 # 1. when the request is missing
 # '''
+# from app import app
 # import unittest
-# import requests
+# from flask import request
 # import json
 # import sys
 
 # class TestGetSingleUserRequest(unittest.TestCase):
+#     requestmissing={"requestid"=""}
+
+#     def setup(self):
+#         app=flask.Flask(__name__)
+     
+    
     
 #     def test_missing_request(self):
-#         result = requests.get('http://127.0.0.1:5000/api/v1/users/request/3')
-#         self.assertEqual(
-#             result.json(), {"requests": "No requests for this user"})
+#         headers = {'content-type': 'application/json'}
+#         with app.test_client() as c:
+#             result =c.post('/api/v1/users/requests/',data=json.dumps(self.requestmissing),headers=headers)
+#             self.assertEqual(result.status_code,404)
+        
     
     
     

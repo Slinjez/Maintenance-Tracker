@@ -76,17 +76,17 @@ def signup():
 
     if not username:
         response = jsonify({"response": "please enter a username"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not usermail:
         response = jsonify({"response": "please enter an usermail"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not userps1:
         response = jsonify({"response": "please enter a password"})
-        response.status_code = 404
+        response.status_code = 400
         return response
 
     elif not userps2:
@@ -117,7 +117,7 @@ def signup():
         else:
             response = jsonify(
                 {"response": "You have already been registered"})
-            response.status_code = 200
+            response.status_code = 400
         return response
 
 
@@ -188,32 +188,32 @@ def getAllRequests(userid=defaultuserid):
         return response
 
 #one request for a given user (enter from url)
-@app.route('/api/v1/users/requests/<string:userid>', methods=['GET'])
-#def getSingleRequest(requestid,userid=defaultuserid):
-def getSingleRequest(userid):
+@app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
+def getSingleRequest(requestid):
     #requestid = request.json["requestid"]
-    if not userid or userid == None:
-        userid = 0
+    #userid=defaultuserid
+    if not requestid or requestid == None:
+        requestid = 0
     try:
-        if userid is None or isinstance(int(userid), int) == False:
+        if requestid is None or isinstance(int(requestid), int) == False:
             response = jsonify(
                 {"requests": "You have entered an invalid user id"})
-            response.status_code = 404
+            response.status_code = 400
             return response
         else:
-            userid = int(userid)
+            requestid = int(requestid)
     except:
         response = jsonify(
-            {"requests": "You have entered an invalid user id"})
+            {"requests": "You have entered an request id"})
         response.status_code = 405  # Method not allowed
         return response
 
     theRequests = [
-        request for request in requests if request["requestorid"]==userid]
+        request for request in requests if request["requestid"]==requestid]
 
     if not theRequests:
-        response = jsonify({"requests": "This user has no requests"})
-        response.status_code = 200
+        response = jsonify({"requests": "This requiest does not exist"})
+        response.status_code = 404
         return response
     else:
         response = jsonify({"requests": theRequests})
