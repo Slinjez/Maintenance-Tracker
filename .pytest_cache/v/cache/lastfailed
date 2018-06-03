@@ -1,8 +1,3 @@
 {
-  "app/tests/test_GetAllUserRequests.py::TestGetAllUserRequests": true,
-  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest": true,
-  "app/tests/test_createNewRequests.py::TestCreateNewRequest": true,
-  "app/tests/test_editRequest.py::TestEditRequest": true,
-  "app/tests/test_login.py::TestLogIn": true,
-  "app/tests/test_signup.py::TestSignup": true
+  "app/tests/test_GetSingleRequests.py::TestGetSingleUserRequest::test_empty_id": true
 }
