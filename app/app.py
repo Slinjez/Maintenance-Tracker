@@ -3,14 +3,8 @@ import types
 import time
 import datetime
 import pdb
-#pdb.set_trace()
-#session['defaultuserid'] = 2
-#app.secret_key = 'any random string'
 defaultuserid = 2
 app = Flask(__name__)
-
-
-#some inits
 users = [
     {
         'userid': 1,
@@ -42,15 +36,6 @@ requests = [
         'requesttitle': 'A Lame Title',
         'requestdescription': 'This is my request description',
         'requesttype': 2,
-        'requestcreationdate': '30 may 2018',
-        'requeststatus': 1
-    },
-    {
-        'requestid': 3,
-        'requestorid': 2,
-        'requesttitle': 'A Better Title',
-        'requestdescription': 'This is my request description',
-        'requesttype': 1,
         'requestcreationdate': '30 may 2018',
         'requeststatus': 1
     }
@@ -336,7 +321,5 @@ def updateRequest(requestid):
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
             return response
-
-
 if __name__ == '__main__':
     app.run(debug=True)
