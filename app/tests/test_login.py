@@ -32,6 +32,10 @@ class TestLogIn(unittest.TestCase):
         "useremail": "mwangiwathiga@gmail.com",
         "userpassword": "mypss"
     }
+    requestshortpassword = {
+        "useremail": "mwangiwathiga@gmail.com",
+        "userpassword": "ss"
+    }
     def setup(self):
         app=flask.Flask(__name__)
 
@@ -60,6 +64,13 @@ class TestLogIn(unittest.TestCase):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.post('/api/v1/users/login',data=json.dumps(self.requestbadpassword),headers=headers)
+            self.assertEqual(result.status_code,400)
+            #self.assertEqual(result.json(), {"response": "Invalid credentials"})
+
+    def test_password_is_short(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('/api/v1/users/login',data=json.dumps(self.requestshortpassword),headers=headers)
             self.assertEqual(result.status_code,400)
             #self.assertEqual(result.json(), {"response": "Invalid credentials"})
 

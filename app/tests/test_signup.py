@@ -47,6 +47,12 @@ class TestSignup(unittest.TestCase):
         "userpassword1": "apassword",
         "userpassword2": "forgot my password"
     }
+    requestshortpassword = {
+        "username": "forgetful guy",
+        "useremail": "forget@mail",
+        "userpassword1": "apassword",
+        "userpassword2": "forgot my password"
+    }
 
     def setup(self):
         app=flask.Flask(__name__)
@@ -85,6 +91,14 @@ class TestSignup(unittest.TestCase):
             result = c.post('/api/v1/users/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
             self.assertEqual(result.status_code,400)
             #self.assertEqual(result.json(), {"response": "please enter matching passwords"})
+    
+    def test_passwords_length(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result = c.post('/api/v1/users/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
+            self.assertEqual(result.status_code,400)
+            #self.assertEqual(result.json(), {"response": "please enter matching passwords"})
+    
     
     
 if __name__ == '__main__':
