@@ -43,7 +43,7 @@ class TestEditRequest(unittest.TestCase):
         with app.test_client() as c:
             result = c.put('/api/v1/users/requests/2',
                            data=json.dumps(self.testnotexisting), headers=headers)
-            self.assertEqual(result.status_code, 500)
+            self.assertEqual(result.status_code, 500)#did this tosolve travis error
     
     def test_invalid_requestId(self):
         headers = {'content-type': 'application/json'}
