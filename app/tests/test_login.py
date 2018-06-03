@@ -36,6 +36,10 @@ class TestLogIn(unittest.TestCase):
         "useremail": "mwangiwathiga@gmail.com",
         "userpassword": "ss"
     }
+    requestsuccess = {
+        "useremail": "mwangiwathiga@gmail.com",
+        "userpassword": "myps"
+    }
     def setup(self):
         app=flask.Flask(__name__)
 
@@ -72,6 +76,12 @@ class TestLogIn(unittest.TestCase):
         with app.test_client() as c:
             result =c.post('/api/v1/users/login',data=json.dumps(self.requestshortpassword),headers=headers)
             self.assertEqual(result.status_code,400)
+            #self.assertEqual(result.json(), {"response": "Invalid credentials"})
+    def test_login_is_sussessful(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('/api/v1/users/login',data=json.dumps(self.requestsuccess),headers=headers)
+            self.assertEqual(result.status_code,200)
             #self.assertEqual(result.json(), {"response": "Invalid credentials"})
 
 

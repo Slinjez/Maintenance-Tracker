@@ -42,23 +42,30 @@ class TestCreateNewRequest(unittest.TestCase):
     def test_missing_request_title(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v1/users/requests/',
+            result = c.post('/api/v1/users/requests',
                            data=json.dumps(self.testvariableNoTitle), headers=headers)
-            self.assertEqual(result.status_code, 404)
+            self.assertEqual(result.status_code, 206)
 
     def test_missing_request_description(self):
         headers = {'content-type': 'application/json'} 
         with app.test_client() as c:
-            result = c.post('/api/v1/users/requests/',
+            result = c.post('/api/v1/users/requests',
                            data=json.dumps(self.testvariableNoDescription), headers=headers)
-            self.assertEqual(result.status_code, 404)
+            self.assertEqual(result.status_code, 206)
 
     def test_missing_request_type(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v1/users/requests/',
+            result = c.post('/api/v1/users/requests',
                            data=json.dumps(self.testvariableNoType), headers=headers)
-            self.assertEqual(result.status_code, 404)
+            self.assertEqual(result.status_code, 206)
+    
+    def test_good_entry(self):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result = c.post('/api/v1/users/requests',
+                           data=json.dumps(self.testvariable), headers=headers)
+            self.assertEqual(result.status_code, 200)
         
         
 

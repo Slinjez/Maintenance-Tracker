@@ -166,9 +166,14 @@ def login():
 
 #all requests belonging to a user defaultuserid
 @app.route('/api/v1/users/requests', methods=['GET'])
-def getAllRequests(userid=defaultuserid):
+def getAllRequests():
+    userid=defaultuserid
     if not userid or userid == None:
         userid = 0
+        userid= request.json['requesttitle']
+        response = jsonify({"response": "Invalid user session"})
+        response.status_code = 405  # Method not allowed
+        return response
     try:
         if userid is None or isinstance(int(userid), int) == False:
             response = jsonify(
@@ -199,8 +204,12 @@ def getAllRequests(userid=defaultuserid):
 
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
 def getSingleRequest(requestid):
+    
+    
     if not requestid or requestid == None:
         #requestid = request.json["requestid"]
+        response = jsonify({"response": "You have not entered an invalid request id"})
+        response.status_code = 405
         requestid = 0
     try:
         if requestid is None or isinstance(int(requestid), int) == False:
@@ -215,15 +224,17 @@ def getSingleRequest(requestid):
             {"requests": "You have entered an request id"})
         response.status_code = 405  # Method not allowed
         return response
-
+    
     theRequests = [
         request for request in requests if request["requestid"] == requestid]
-
+    
     if not theRequests:
         response = jsonify({"requests": "This request does not exist"})
-        response.status_code = 404
+        response.status_code = 404        
         return response
+        pdb.set_trace()
     else:
+        
         response = jsonify({"requests": theRequests})
         response.status_code = 200
         return response
@@ -231,7 +242,9 @@ def getSingleRequest(requestid):
 
 #add request
 @app.route('/api/v1/users/requests', methods=['POST'])
-def createNewRequest(defUsr=defaultuserid):
+def createNewRequest():
+    #defUsr=defaultuserid
+    #pdb.set_trace()
     requestorid = defaultuserid
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
@@ -249,11 +262,17 @@ def createNewRequest(defUsr=defaultuserid):
     requestcreationdate = str(day)+" "+str(month)+" "+str(year)
 
     if not requesttitle:
-        return jsonify({"response": "Enter request title"})
+        response=jsonify({"response": "Enter request title"})
+        response.status_code = 206
+        return response
     elif not requestdescription:
-        return jsonify({"response": "Enter request description"})
+        response=jsonify({"response": "Enter request description"})
+        response.status_code = 206
+        return response
     elif not requesttype:
-        return jsonify({"response": "Select request type"})
+        response=jsonify({"response": "Enter request type"})
+        response.status_code = 206
+        return response
     else:
         newrequest = {
             "requestid": lastreuestid,
@@ -266,47 +285,49 @@ def createNewRequest(defUsr=defaultuserid):
         }
 
         requests.append(newrequest)
-        return jsonify({"response": "Created '"+requesttitle+"' request successfully"})
-
+        response=jsonify({"response": "Created '"+requesttitle+"' request successfully"})
+        response.status_code = 200
+        return response
 
 #and finally edit a request
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
 def updateRequest(requestid):
+    #pdb.set_trace()
     if not requestid or requestid == None:
         requestid = 0
     try:
         if requestid is None or isinstance(int(requestid), int) == False:
             response = jsonify(
                 {"requests": "You have entered an invalid request id"})
-            response.status_code = 400
+            response.status_code = 500
             return response
         else:
             requestid = int(requestid)
     except:
         response = jsonify(
             {"requests": "You have entered an invalid request id"})
-        response.status_code = 400
+        response.status_code = 500
         return response
 
     theRequests = [
         request for request in requests if request["requestid"] == requestid]
 
     if not theRequests:
-        response = jsonify({"respons": "Cannot edit this request"})
-        response.status_code = 200
+        response = jsonify({"respons": "Cannot edit this request because its missing"})
+        response.status_code = 500
         return response
     else:
         requesttytle = request.json['requesttitle']
         reqdescription = request.json['requestdescription']
 
         if not requesttytle:
-            response = jsonify({"response": "Enter request id"})
-            response.status_code = 400
+            response = jsonify({"response": "Enter request title"})
+            response.status_code = 206
             return response
 
         elif not reqdescription:
             response = jsonify({"response": "Enter request description"})
-            response.status_code = 400
+            response.status_code = 206
             return response
 
         else:
