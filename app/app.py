@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request, session
-#from flask.ext.session import Session
 import types
 import time
 import datetime
@@ -71,7 +70,6 @@ def signup():
     userps2 = request.json["userpassword2"]
 
     lastid = users[-1]["userid"]
-    #pdb.set_trace()
     lastid += 1
 
     if not username:
@@ -234,8 +232,6 @@ def getSingleRequest(requestid):
 #add request
 @app.route('/api/v1/users/requests', methods=['POST'])
 def createNewRequest(defUsr=defaultuserid):
-    #requestid=request.json["requestid"]
-    #requestorid=request.json["requestorid"]
     requestorid = defaultuserid
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
