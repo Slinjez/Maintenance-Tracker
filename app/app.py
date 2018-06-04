@@ -323,5 +323,5 @@ def updateRequest(requestid):
             response.status_code = 200
             return response
 if __name__ == '__main__':
-    port=os.getenv("$PORT", 5000)
-    app.run("0.0.0",port)
+    port=int(os.getenv.get("PORT", 5000))
+    app.run(host="0.0.0.0",port=port)
