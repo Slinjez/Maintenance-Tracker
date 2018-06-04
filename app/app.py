@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, request, session
+from flask import jsonify, request, session
 import types
 import time
 import datetime
 import pdb
+from app import app
 defaultuserid = 2
-app = Flask(__name__)
+
 users = [
     {
         'userid': 1,
@@ -321,5 +322,3 @@ def updateRequest(requestid):
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
             return response
-if __name__ == '__main__':
-    app.run(debug=True)
