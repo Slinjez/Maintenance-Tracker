@@ -155,26 +155,13 @@ def login():
 #all requests belonging to a user defaultuserid
 @app.route('/api/v1/users/requests', methods=['GET'])
 def getAllRequests():
-    userid=defaultuserid
-    if not userid or userid == None:
-        userid = 0
-        userid= request.json['requesttitle']
-        response = jsonify({"response": "Invalid user session"})
-        response.status_code = 405  # Method not allowed
-        return response
-    try:
-        if userid is None or isinstance(int(userid), int) == False:
-            response = jsonify(
-                {"requests": "You have entered an invalid user id"})
-            response.status_code = 200
-            return response
-        else:
-            userid = int(userid)
-    except:
-        response = jsonify({"requests": "You have entered an invalid user id"})
-        response.status_code = 405  # Method not allowed
-        return response
-
+    
+    if not request.json["userid"]:
+        userid=defaultuserid
+        #pdb.set_trace()
+    else:
+        userid=request.json["userid"]
+    
     theRequests = [
         request for request in requests if request["requestorid"] == userid]
 
