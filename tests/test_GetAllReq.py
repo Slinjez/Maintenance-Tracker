@@ -31,7 +31,7 @@ class TestLogIn(unittest.TestCase):
             headers = {'content-type': 'application/json'}
             with app.test_client() as c:
                 result =c.get('/api/v1/users/requests',data=json.dumps(self.useridbad),headers=headers)
-            self.assertEqual(result.status_code,500)
+            self.assertEqual(result.status_code,404)
             
 
 
