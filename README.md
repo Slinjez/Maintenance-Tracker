@@ -14,8 +14,7 @@ This is an application that provides users with the ability to reach out to oper
 
 
 # Badges
-[![Coverage Status](https://coveralls.io/repos/github/Slinjez/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/Slinjez/Maintenance-Tracker?branch=develop)
-
+[![Build Status](https://travis-ci.org/Slinjez/Maintenance-Tracker.svg?branch=develop)](https://travis-ci.org/Slinjez/Maintenance-Tracker)
 
 [![Build Status](https://travis-ci.org/Slinjez/Maintenance-Tracker.svg?branch=develop)](https://travis-ci.org/Slinjez/Maintenance-Tracker)
 
