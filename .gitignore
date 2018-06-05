@@ -3,21 +3,42 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+<<<<<<< HEAD
 # Distribution / packaging
 .Python
 env/
+=======
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+>>>>>>> ch-recreate-structure-158072403
 build/
 develop-eggs/
 dist/
 downloads/
+<<<<<<< HEAD
+=======
+eggs/
+.eggs/
+>>>>>>> ch-recreate-structure-158072403
 lib/
 lib64/
 parts/
 sdist/
 var/
+<<<<<<< HEAD
 *.egg-info/
 .installed.cfg
 *.egg
+=======
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+>>>>>>> ch-recreate-structure-158072403
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -37,8 +58,14 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+<<<<<<< HEAD
 *,cover
 .hypothesis/
+=======
+*.cover
+.hypothesis/
+.pytest_cache/
+>>>>>>> ch-recreate-structure-158072403
 
 # Translations
 *.mo
@@ -47,6 +74,10 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
+<<<<<<< HEAD
+=======
+db.sqlite3
+>>>>>>> ch-recreate-structure-158072403
 
 # Flask stuff:
 instance/
@@ -61,15 +92,48 @@ docs/_build/
 # PyBuilder
 target/
 
+<<<<<<< HEAD
 # IPython Notebook
+=======
+# Jupyter Notebook
+>>>>>>> ch-recreate-structure-158072403
 .ipynb_checkpoints
 
 # pyenv
 .python-version
 
+<<<<<<< HEAD
 # dotenv
 .env
 
 # virtualenv
 venv/
 ENV/
+=======
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+>>>>>>> ch-recreate-structure-158072403
