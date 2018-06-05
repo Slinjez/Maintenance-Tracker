@@ -13,7 +13,7 @@ This is an application that provides users with the ability to reach out to oper
 # How to use this application
 
 
-# Badges
+# CI Badges
 [![Coverage Status](https://coveralls.io/repos/github/Slinjez/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/Slinjez/Maintenance-Tracker?branch=develop)
 
 
