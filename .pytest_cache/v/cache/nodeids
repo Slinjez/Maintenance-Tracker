@@ -1,5 +1,4 @@
 [
-  "tests/test_GetAllReq.py::TestLogIn::test_bad_request",
   "tests/test_GetAllReq.py::TestLogIn::test_good_request",
   "tests/test_login.py::TestLogIn::test_email_not_blank",
   "tests/test_login.py::TestLogIn::test_good_dataset",
