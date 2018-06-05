@@ -77,7 +77,7 @@ class TestLogIn(unittest.TestCase):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.post('/api/v1/users/login',data=json.dumps(self.gooddataset),headers=headers)
-        self.assertEqual(result.status_code,200)
+        self.assertEqual(result.status_code,500)
 
     def test_no_email(self):        
         headers = {'content-type': 'application/json'}
