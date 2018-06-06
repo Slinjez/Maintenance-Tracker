@@ -32,6 +32,12 @@
 #             with app.test_client() as c:
 #                 result =c.get('/api/v1/users/requests',data=json.dumps(self.useridbad),headers=headers)
 #             self.assertEqual(result.status_code,404)
+    
+#     def test_JSONgood_request(self):
+#             headers = {'content-type': 'application/json'}
+#             with app.test_client() as c:
+#                 result =c.get('/api/v1/users/requests',data=json.dumps(self.useridgood),headers=headers)
+#             self.assertEqual(result.json(), {"response": "password is required"})
             
 
 
