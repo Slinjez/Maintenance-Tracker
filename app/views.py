@@ -1,6 +1,6 @@
 #This is where the routes are defined. 
 # It may be split into a package of its own (app/views/) with related views grouped together into modules.
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, make_response
 import types
 import time
 import datetime
@@ -9,6 +9,7 @@ import os
 from app import app
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
 defaultuserid = 2
 users = [
     
@@ -28,7 +29,7 @@ def index():
 def signup():
     username = request.json["username"]
     usermail = request.json["useremail"]
-    userps1 = request.json["userpassword1"]
+    userps1 = request.json["userpassword"]
     userps2 = request.json["userpassword2"]
     
 
@@ -66,13 +67,14 @@ def signup():
 
     else:
         #pdb.set_trace()
+        #hashedpassword=generate_password_hash(userps1, method='sha256')
         hashedpassword=generate_password_hash(userps1, method='sha256')
         newsignuprequest = {
             #"userid": lastid,
             "userid": str(uuid.uuid4()),
             "username": request.json["username"],
             "useremail": request.json["useremail"],
-            "userpassword1": hashedpassword
+            "userpassword": hashedpassword
         }
         #check if new user
         theRequests = [
@@ -91,6 +93,26 @@ def signup():
 def getAllUsers():
     response=jsonify({"users":users})
     return response
+
+@app.route('/api/v1/users/login1', methods=['POST'])
+def login1():
+    auth = request.authorization
+    if not auth or not auth.username or not auth.password:
+        return make_response("1could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
+    
+    user= [theuser for theuser in users if theuser["username"] == auth.username]
+    print(users)
+
+    if not user:
+        return make_response("2could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
+
+    if check_password_hash(user['userpassword'],auth.password):
+        token=jwt.encode({'publicid':user['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+
+        return jsonify({"token":token.decode('UTF-8')})
+
+    return make_response("3could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
+
 
 @app.route('/api/v1/users/login', methods=['POST'])
 def login():
@@ -115,21 +137,26 @@ def login():
     else:
         theRequests = [
             theuser for theuser in users if theuser["useremail"] == usermail]
-
         if not theRequests:
             response = jsonify({"response": "Unregistered email"})
             response.status_code = 400
             return response
-        else:
+        else:            
             correctps = theRequests[0]['userpassword']
-            if correctps != userps:
+            #pdb.set_trace()
+            if check_password_hash(correctps,userps) != True:
+                print("ps mismatch")
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
                 return response
             else:
-                response = jsonify({"response": "logged in correctly"})
-                response.status_code = 200
-                return response
+                token=jwt.encode({'publicid':theRequests[0]['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+
+                return jsonify({"token":token.decode('UTF-8')})
+                
+                # response = jsonify({"response": "logged in correctly"})
+                # response.status_code = 200
+                # return response
 
 
 #all requests belonging to a user defaultuserid
