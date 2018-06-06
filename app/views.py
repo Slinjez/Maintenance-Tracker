@@ -10,7 +10,9 @@ from app import app
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from functools import wraps
 defaultuserid = 2
+
 users = [
     
 ]
@@ -19,6 +21,26 @@ requests = [
     
 ]
 
+def tokenRequired(f):
+    @wraps(f)
+    def decorated(*args,**kwargs):
+        token =None
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({"message":"Token is missing"}),401
+        
+        theRequests = [user for user in users if users["userid"] == currentUser]
+        
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            currentUser = theRequests[0]['userid']
+        except:
+            return jsonify({'message':'Token is invalid'}),401
+
+        return f(currentUser,*args,**kwargs)
+    return decorated
 
 @app.route('/')
 def index():
@@ -89,29 +111,6 @@ def signup():
             response.status_code = 200
         return response
 
-@app.route('/api/v1/users/getusers/', methods=['GET'])
-def getAllUsers():
-    response=jsonify({"users":users})
-    return response
-
-@app.route('/api/v1/users/login1', methods=['POST'])
-def login1():
-    auth = request.authorization
-    if not auth or not auth.username or not auth.password:
-        return make_response("1could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
-    
-    user= [theuser for theuser in users if theuser["username"] == auth.username]
-    print(users)
-
-    if not user:
-        return make_response("2could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
-
-    if check_password_hash(user['userpassword'],auth.password):
-        token=jwt.encode({'publicid':user['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-
-        return jsonify({"token":token.decode('UTF-8')})
-
-    return make_response("3could not verify", 401,{'WWW-Authenticate':'Basic realm="Login Required"'})
 
 
 @app.route('/api/v1/users/login', methods=['POST'])
@@ -159,15 +158,19 @@ def login():
                 # return response
 
 
-#all requests belonging to a user defaultuserid
+#all requests belonging to a user defaultuserid/
 @app.route('/api/v1/users/requests', methods=['GET'])
-def getAllRequests():
+@tokenRequired
+def getAllRequests(currentUser):
     
+    if not currentUser.userid:
+        return jsonify({"Message":"You can not access this"})
+
     if not request.json["userid"]:
-        userid=defaultuserid
+        userid=currentUser
         #pdb.set_trace()
     else:
-        userid=request.json["userid"]
+        userid=currentUser
     
     theRequests = [
         request for request in requests if request["requestorid"] == userid]
@@ -185,6 +188,7 @@ def getAllRequests():
 
 
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
+@tokenRequired
 def getSingleRequest(requestid):
     
     
@@ -224,6 +228,7 @@ def getSingleRequest(requestid):
 
 #add request
 @app.route('/api/v1/users/requests', methods=['POST'])
+@tokenRequired
 def createNewRequest():
     #defUsr=defaultuserid
     #pdb.set_trace()
@@ -273,6 +278,7 @@ def createNewRequest():
 
 #and finally edit a request
 @app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
+@tokenRequired
 def updateRequest(requestid):
     #pdb.set_trace()
     if not requestid or requestid == None:
