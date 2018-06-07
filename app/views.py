@@ -11,8 +11,8 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
-from app.database import dbActions
-dbmodel = dbActions()
+from app.dbFuncs import dbOperations
+dbmodel = dbOperations()
 
 defaultuserid = {"userid": ""}
 
