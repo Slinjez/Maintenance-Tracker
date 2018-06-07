@@ -149,7 +149,7 @@ def login():
                 response.status_code = 400
                 return response
             else:
-                token=jwt.encode({'publicid':theRequests[0]['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+                token=jwt.encode({'publicid':theRequests[0]['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']),200
                 #response = jsonify({"response": "logged in correctly"})
                 #response.status_code = 200
                 defaultuserid['userid']=theRequests[0]['userid']
