@@ -248,7 +248,9 @@ def createNewRequest(currentUser):
     #defUsr=defaultuserid
     #pdb.set_trace()
     if not defaultuserid['userid']:
-        return jsonify({"Message": "You can not access this"})
+        response=jsonify({"Message": "You can not access this"})
+        response.status_code = 401#unauthorised
+        return response
     requestorid = defaultuserid['userid']
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
@@ -258,7 +260,7 @@ def createNewRequest(currentUser):
 
     #lastreuestid = requests[-1]["requestid"]
     #pdb.set_trace()
-    lastreuestid = str(uuid.uuid4())
+    #lastreuestid = str(uuid.uuid4())
 
     year = datetime.date.today().strftime("%Y")
     month = datetime.date.today().strftime("%B")
@@ -279,7 +281,7 @@ def createNewRequest(currentUser):
         return response
     else:
         newrequest = {
-            "requestid": lastreuestid,
+            
             "requestorid": requestorid,
             "requesttitle": requesttitle,
             "requestdescription": requestdescription,
@@ -287,8 +289,8 @@ def createNewRequest(currentUser):
             "requestcreationdate": requestcreationdate,
             "requeststatus": requeststatus
         }
-
-        requests.append(newrequest)
+        dbmodel.createRequest(newrequest)
+        #requests.append(newrequest)
         response = jsonify(
             {"response": "Created '"+requesttitle+"' request successfully"})
         response.status_code = 200
