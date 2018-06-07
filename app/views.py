@@ -1,6 +1,6 @@
 #This is where the routes are defined. 
 # It may be split into a package of its own (app/views/) with related views grouped together into modules.
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, make_response
 import types
 import time
 import datetime
@@ -8,58 +8,54 @@ import pdb
 import os
 from app import app
 import uuid
-defaultuserid = 2
+from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+from functools import wraps
+defaultuserid ={"userid":""}
+
 users = [
-    {
-        'userid': 1,
-        'username': 'daisy',
-        'useremail': 'daisy@daisy.com',
-        'userpassword': 'herps'
-    },
-    {
-        'userid': 2,
-        'username': 'thiga',
-        'useremail': 'mwangiwathiga@gmail.com',
-        'userpassword': 'myps'
-    }
+    
 ]
 
 requests = [
-    {
-        'requestid': 1,
-        'requestorid': 1,
-        'requesttitle': 'An Awesome Title',
-        'requestdescription': 'This is my request description',
-        "requesttype": 1,
-        'requestcreationdate': '30 may 2018',
-        'requeststatus': 1
-    },
-    {
-        'requestid': 2,
-        'requestorid': 2,
-        'requesttitle': 'A Lame Title',
-        'requestdescription': 'This is my request description',
-        'requesttype': 2,
-        'requestcreationdate': '30 may 2018',
-        'requeststatus': 1
-    }
+    
 ]
 
+def tokenRequired(f):
+    @wraps(f)
+    def decorated(*args,**kwargs):
+        token =None
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({"message":"Token is missing"}),401
+        
+        #theRequests = [user for user in users if users["userid"] == currentUser]
+        
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            currentUser = defaultuserid['userid']
+        except:
+            return jsonify({'message':'Token is invalid'}),401
+
+        return f(currentUser,*args,**kwargs)
+    return decorated
 
 @app.route('/')
 def index():
     return "will be back with the ui soon"
 
 
-@app.route('/api/v1/users/signup', methods=['POST'])
+@app.route('/api/v2/users/signup', methods=['POST'])
 def signup():
     username = request.json["username"]
     usermail = request.json["useremail"]
-    userps1 = request.json["userpassword1"]
+    userps1 = request.json["userpassword"]
     userps2 = request.json["userpassword2"]
+    
 
-    lastid = users[-1]["userid"]
-    lastid += 1
+    #lastid=uuid.uuid4()
 
     if not username:
         response = jsonify({"response": "please enter a username"})
@@ -93,11 +89,14 @@ def signup():
 
     else:
         #pdb.set_trace()
+        #hashedpassword=generate_password_hash(userps1, method='sha256')
+        hashedpassword=generate_password_hash(userps1, method='sha256')
         newsignuprequest = {
-            "userid": lastid,
+            #"userid": lastid,
+            "userid": str(uuid.uuid4()),
             "username": request.json["username"],
             "useremail": request.json["useremail"],
-            "userpassword1": request.json["userpassword1"]
+            "userpassword": hashedpassword
         }
         #check if new user
         theRequests = [
@@ -113,11 +112,12 @@ def signup():
         return response
 
 
-@app.route('/api/v1/users/login', methods=['POST'])
-def login():
 
+@app.route('/api/v2/users/login', methods=['POST'])
+def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
+    hashedpassword=generate_password_hash(userps, method='sha256')
     #pdb.set_trace()
     if not usermail:
         response = jsonify({"response": "email is required"})
@@ -136,32 +136,44 @@ def login():
     else:
         theRequests = [
             theuser for theuser in users if theuser["useremail"] == usermail]
-
         if not theRequests:
             response = jsonify({"response": "Unregistered email"})
             response.status_code = 400
             return response
-        else:
+        else:            
             correctps = theRequests[0]['userpassword']
-            if correctps != userps:
+            #pdb.set_trace()
+            if check_password_hash(correctps,userps) != True:
+                print("ps mismatch")
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
                 return response
             else:
-                response = jsonify({"response": "logged in correctly"})
-                response.status_code = 200
-                return response
+                token=jwt.encode({'publicid':theRequests[0]['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']),200
+                #response = jsonify({"response": "logged in correctly"})
+                #response.status_code = 200
+                defaultuserid['userid']=theRequests[0]['userid']
+                #defaultuserid=theRequests[0]['userid']
+                return jsonify({"token":token.decode('UTF-8')})
+                
+                
 
 
-#all requests belonging to a user defaultuserid
-@app.route('/api/v1/users/requests', methods=['GET'])
-def getAllRequests():
+#all requests belonging to a user defaultuserid/
+@app.route('/api/v2/users/requests', methods=['GET'])
+@tokenRequired
+def getAllRequests(currentUser):
     
-    if not request.json["userid"]:
-        userid=defaultuserid
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
+    
+    userid=defaultuserid['userid']
+
+    #if not request.json["userid"]:
+        #userid=currentUser
         #pdb.set_trace()
-    else:
-        userid=request.json["userid"]
+    #else:
+        #userid=currentUser
     
     theRequests = [
         request for request in requests if request["requestorid"] == userid]
@@ -178,10 +190,12 @@ def getAllRequests():
 #one request for a given user (enter from url)
 
 
-@app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
-def getSingleRequest(requestid):
+@app.route('/api/v2/users/requests/<string:requestid>', methods=['GET'])
+@tokenRequired
+def getSingleRequest(currentUser,requestid):
     
-    
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
     if not requestid or requestid == None:
         #requestid = request.json["requestid"]
         response = jsonify({"response": "You have not entered an invalid request id"})
@@ -217,20 +231,23 @@ def getSingleRequest(requestid):
 
 
 #add request
-@app.route('/api/v1/users/requests', methods=['POST'])
-def createNewRequest():
+@app.route('/api/v2/users/requests', methods=['POST'])
+@tokenRequired
+def createNewRequest(currentUser):
     #defUsr=defaultuserid
     #pdb.set_trace()
-    requestorid = defaultuserid
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
+    requestorid = defaultuserid['userid']
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
     requesttype = request.json["requesttype"]
     #requestcreationdate=request.json["requestcreationdate"]
     requeststatus = 1
 
-    lastreuestid = requests[-1]["requestid"]
+    #lastreuestid = requests[-1]["requestid"]
     #pdb.set_trace()
-    lastreuestid += 1
+    lastreuestid =str(uuid.uuid4())
 
     year = datetime.date.today().strftime("%Y")
     month = datetime.date.today().strftime("%B")
@@ -266,9 +283,12 @@ def createNewRequest():
         return response
 
 #and finally edit a request
-@app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
-def updateRequest(requestid):
+@app.route('/api/v2/users/requests/<string:requestid>', methods=['PUT'])
+@tokenRequired
+def updateRequest(currentUser,requestid):
     #pdb.set_trace()
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
     if not requestid or requestid == None:
         requestid = 0
     try:
@@ -312,3 +332,4 @@ def updateRequest(requestid):
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
             return response
+            
