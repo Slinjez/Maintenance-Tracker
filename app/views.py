@@ -160,12 +160,13 @@ def login():
                 token = jwt.encode({'publicid': loginDetails[0]['userid'], 'exp': datetime.datetime.utcnow(
                 )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
                 #response = jsonify({"response": "logged in correctly"})
-                #response.status_code = 200
+                response=jsonify({"token": token})
+                response.status_code = 200
                 defaultuserid['userid'] = loginDetails[0]['userid']
                 #defaultuserid=theRequests[0]['userid']
                 
-                print(token)
-                return jsonify({"token": token})
+                #print(token)
+                return response
 
 
 #all requests belonging to a user defaultuserid/
