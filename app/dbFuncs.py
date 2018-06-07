@@ -1,5 +1,6 @@
 import psycopg2
 import psycopg2.extras
+from datetime import datetime as dt
 
 class dbOperations():
     connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
@@ -42,6 +43,34 @@ class dbOperations():
             return None
         else:
             return theResult
+
+    def createRequest(self,newrequest):
+        self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
+        self.cursor = self.connection.cursor()
+        requesttitle= newrequest['requesttitle'],
+        requestdescription= newrequest['requestdescription'],
+        requesttype= newrequest['requesttype'],
+        requestcreationdate= dt.now(),
+        requeststatus= newrequest['requeststatus']
+        query="insert into users (requesttitle,requestdescription,requesttype,requestdate,requeststatus) values(%s,%s,%s,%s,%s);",(
+            requesttitle,
+            requestdescription,
+            requesttype,
+            requestcreationdate,
+            requeststatus
+        )
+        #print(query)
+        #self.addToDb(query)
+        self.cursor.execute("INSERT INTO requests (requesttitle,requestdescription,requesttype,requestdate,requeststatus) values(%s,%s,%s,%s,%s)",(
+            requesttitle,
+            requestdescription,
+            requesttype,
+            requestcreationdate,
+            requeststatus))
+        
+        self.connection.commit()
+        self.cursor.close()
+        self.cursor.close()
 
     def getFromDb(self,query):
         self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
