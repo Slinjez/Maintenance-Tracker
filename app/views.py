@@ -11,7 +11,7 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
-defaultuserid = 2
+defaultuserid ={"userid":""}
 
 users = [
     
@@ -31,11 +31,11 @@ def tokenRequired(f):
         if not token:
             return jsonify({"message":"Token is missing"}),401
         
-        theRequests = [user for user in users if users["userid"] == currentUser]
+        #theRequests = [user for user in users if users["userid"] == currentUser]
         
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            currentUser = theRequests[0]['userid']
+            currentUser = defaultuserid['userid']
         except:
             return jsonify({'message':'Token is invalid'}),401
 
@@ -47,7 +47,7 @@ def index():
     return "will be back with the ui soon"
 
 
-@app.route('/api/v1/users/signup', methods=['POST'])
+@app.route('/api/v2/users/signup', methods=['POST'])
 def signup():
     username = request.json["username"]
     usermail = request.json["useremail"]
@@ -113,7 +113,7 @@ def signup():
 
 
 
-@app.route('/api/v1/users/login', methods=['POST'])
+@app.route('/api/v2/users/login', methods=['POST'])
 def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
@@ -150,27 +150,30 @@ def login():
                 return response
             else:
                 token=jwt.encode({'publicid':theRequests[0]['userid'], 'exp':datetime.datetime.utcnow()+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-
+                #response = jsonify({"response": "logged in correctly"})
+                #response.status_code = 200
+                defaultuserid['userid']=theRequests[0]['userid']
+                #defaultuserid=theRequests[0]['userid']
                 return jsonify({"token":token.decode('UTF-8')})
                 
-                # response = jsonify({"response": "logged in correctly"})
-                # response.status_code = 200
-                # return response
+                
 
 
 #all requests belonging to a user defaultuserid/
-@app.route('/api/v1/users/requests', methods=['GET'])
+@app.route('/api/v2/users/requests', methods=['GET'])
 @tokenRequired
 def getAllRequests(currentUser):
     
-    if not currentUser.userid:
+    if not defaultuserid['userid']:
         return jsonify({"Message":"You can not access this"})
+    
+    userid=defaultuserid['userid']
 
-    if not request.json["userid"]:
-        userid=currentUser
+    #if not request.json["userid"]:
+        #userid=currentUser
         #pdb.set_trace()
-    else:
-        userid=currentUser
+    #else:
+        #userid=currentUser
     
     theRequests = [
         request for request in requests if request["requestorid"] == userid]
@@ -187,11 +190,12 @@ def getAllRequests(currentUser):
 #one request for a given user (enter from url)
 
 
-@app.route('/api/v1/users/requests/<string:requestid>', methods=['GET'])
+@app.route('/api/v2/users/requests/<string:requestid>', methods=['GET'])
 @tokenRequired
-def getSingleRequest(requestid):
+def getSingleRequest(currentUser,requestid):
     
-    
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
     if not requestid or requestid == None:
         #requestid = request.json["requestid"]
         response = jsonify({"response": "You have not entered an invalid request id"})
@@ -227,21 +231,23 @@ def getSingleRequest(requestid):
 
 
 #add request
-@app.route('/api/v1/users/requests', methods=['POST'])
+@app.route('/api/v2/users/requests', methods=['POST'])
 @tokenRequired
-def createNewRequest():
+def createNewRequest(currentUser):
     #defUsr=defaultuserid
     #pdb.set_trace()
-    requestorid = defaultuserid
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
+    requestorid = defaultuserid['userid']
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
     requesttype = request.json["requesttype"]
     #requestcreationdate=request.json["requestcreationdate"]
     requeststatus = 1
 
-    lastreuestid = requests[-1]["requestid"]
+    #lastreuestid = requests[-1]["requestid"]
     #pdb.set_trace()
-    lastreuestid += 1
+    lastreuestid =str(uuid.uuid4())
 
     year = datetime.date.today().strftime("%Y")
     month = datetime.date.today().strftime("%B")
@@ -277,10 +283,12 @@ def createNewRequest():
         return response
 
 #and finally edit a request
-@app.route('/api/v1/users/requests/<string:requestid>', methods=['PUT'])
+@app.route('/api/v2/users/requests/<string:requestid>', methods=['PUT'])
 @tokenRequired
-def updateRequest(requestid):
+def updateRequest(currentUser,requestid):
     #pdb.set_trace()
+    if not defaultuserid['userid']:
+        return jsonify({"Message":"You can not access this"})
     if not requestid or requestid == None:
         requestid = 0
     try:
