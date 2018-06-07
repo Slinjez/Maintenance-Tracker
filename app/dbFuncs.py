@@ -28,10 +28,20 @@ class dbOperations():
         
     
     def confirmLogin(self,usermail):
-        pass
+        query="select * from users where useremail='{usermail}'".format(usermail=usermail)
+        theResult=self.getFromDb(query)
+        if not theResult:
+            return False
+        else:
+            return True
     
     def getLoginCredentials(self,usermail):
-        pass
+        query="select * from users where useremail='{usermail}'".format(usermail=usermail)
+        theResult=self.getFromDb(query)
+        if not theResult:
+            return None
+        else:
+            return theResult
 
     def getFromDb(self,query):
         self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
