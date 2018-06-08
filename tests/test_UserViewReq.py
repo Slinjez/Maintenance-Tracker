@@ -22,12 +22,31 @@ class TestGetAllUserRequests(unittest.TestCase):
         "userid":""
     }
 
+    goodlogindet={
+        "useremail": "thigaz@gmail.com",
+        "userpassword":"ps123"
+    }
+    # theToken=getToken(goodlogindet)
+    def getToken(self,goodlogindet):
+        headers = {'content-type': 'application/json'}
+        with app.test_client() as c:
+            result =c.post('/api/v2/users/login',data=json.dumps(self.goodlogindet),headers=headers)
+            theToken=result.token
+            return theToken
+
+    # def test_client_with_no_request(self,theToken):                
+    #     headers = {'content-type': 'application/json','x-access-token':theToken}
+    #     with app.test_client() as c:
+    #         result =c.get('/api/v2/users/requests',data=json.dumps(self.requestnotexisting),headers=headers)
+    #         self.assertEqual(result.status_code,200)#set 2oo coz its defined by default
+    
     def test_client_with_no_request(self):                
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests',data=json.dumps(self.requestnotexisting),headers=headers)
             self.assertEqual(result.status_code,200)#set 2oo coz its defined by default
     
+
     def test_empty_id(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:

@@ -6,7 +6,7 @@ import sys
 
 class TestCreateNewRequest(unittest.TestCase):
     def setup(self):
-        #app = flask.Flask(__name__)
+        pass
 
         testvariable = {
             "requesttitle": "Just Another Awesome Title",
@@ -29,7 +29,7 @@ class TestCreateNewRequest(unittest.TestCase):
             "requestdescription": "The description"
             
         }
-        # requestJson=jsonify({"therq":request})
+        
 
         def test_missing_request_title(self):        
             headers = {'content-type': 'application/json'}

@@ -12,7 +12,7 @@ import sys
 class TestLogIn(unittest.TestCase):
     
     def setup(self):
-        #app=flask.Flask(__name__)
+        
         pass
 
     useridgood={

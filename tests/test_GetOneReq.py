@@ -9,7 +9,7 @@ import sys
 
 class TestGetSingleUserRequest(unittest.TestCase):
     def setup(self):
-        #app=flask.Flask(__name__)
+        
         pass
 
     requestnotexisting=8

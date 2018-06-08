@@ -24,7 +24,7 @@ requests = [
 
 ]
 
-print(defaultuserid)
+
 def tokenRequired(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -34,8 +34,6 @@ def tokenRequired(f):
 
         if not token:
             return jsonify({"message": "Token is missing"}), 401
-
-        #theRequests = [user for user in users if users["userid"] == currentUser]
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
@@ -58,8 +56,6 @@ def signup():
     usermail = request.json["useremail"]
     userps1 = request.json["userpassword"]
     userps2 = request.json["userpassword2"]
-
-    #lastid=uuid.uuid4()
 
     if not username:
         response = jsonify({"response": "please enter a username"})
@@ -93,15 +89,15 @@ def signup():
         return response
 
     else:
-        
+
         hashedpassword = generate_password_hash(userps1, method='sha256')
 
         confirmnewuser = dbmodel.confirmNewUser(usermail)
-        
+
         if confirmnewuser == True:
-            
+
             user = {
-                #userid=str(uuid.uuid4()),
+
                 "username": request.json["username"],
                 "useremail": request.json["useremail"],
                 "userpassword": hashedpassword,
@@ -122,7 +118,7 @@ def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
     hashedpassword = generate_password_hash(userps, method='sha256')
-    #pdb.set_trace()
+
     if not usermail:
         response = jsonify({"response": "email is required"})
         response.status_code = 400
@@ -139,33 +135,30 @@ def login():
         response.status_code = 400
         return response
     else:
-        
+
         confirmexistingemail = dbmodel.confirmLogin(usermail)
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
             response.status_code = 400
             return response
         else:
-            loginDetails =dbmodel.getLoginCredentials(usermail)
-            
+            loginDetails = dbmodel.getLoginCredentials(usermail)
+
             correctps = loginDetails[0]['password']
-            #print(correctps)
-            #pdb.set_trace()
+
             if check_password_hash(correctps, userps) != True:
-                #print("ps mismatch")
+
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
                 return response
             else:
                 token = jwt.encode({'publicid': loginDetails[0]['userid'], 'exp': datetime.datetime.utcnow(
                 )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
-                #response = jsonify({"response": "logged in correctly"})
-                response=jsonify({"token": token})
+
+                response = jsonify({"token": token})
                 response.status_code = 200
                 defaultuserid['userid'] = loginDetails[0]['userid']
-                #defaultuserid=theRequests[0]['userid']
-                
-                #print(token)
+
                 return response
 
 
@@ -174,21 +167,11 @@ def login():
 @tokenRequired
 def getAllRequests(currentUser):
     userid = defaultuserid['userid']
-    print("user id",userid)
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
-    
-
-    #if not request.json["userid"]:
-    #userid=currentUser
-    #pdb.set_trace()
-    #else:
-    #userid=currentUser
-
-    
-    
-    theRequests=dbmodel.getAllRequest(userid)
+    theRequests = dbmodel.getAllRequest(userid)
     if not theRequests:
         response = jsonify({"requests": "No requests for this user"})
         response.status_code = 404
@@ -198,17 +181,15 @@ def getAllRequests(currentUser):
         response.status_code = 200
         return response
 
-#one request for a given user (enter from url)
-
 
 @app.route('/api/v2/users/requests/<string:requestid>', methods=['GET'])
 @tokenRequired
 def getSingleRequest(currentUser, requestid):
-    userid=defaultuserid['userid']
+    userid = defaultuserid['userid']
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
-        #requestid = request.json["requestid"]
+
         response = jsonify(
             {"response": "You have not entered an invalid request id"})
         response.status_code = 405
@@ -227,13 +208,12 @@ def getSingleRequest(currentUser, requestid):
         response.status_code = 405  # Method not allowed
         return response
 
-   
-    theRequests=dbmodel.getOneRequest(userid,requestid)
+    theRequests = dbmodel.getOneRequest(userid, requestid)
     if not theRequests:
         response = jsonify({"requests": "You can not view this request"})
         response.status_code = 404
         return response
-        #pdb.set_trace()
+
     else:
         response = jsonify({"requests": theRequests})
         response.status_code = 200
@@ -244,22 +224,17 @@ def getSingleRequest(currentUser, requestid):
 @app.route('/api/v2/users/requests', methods=['POST'])
 @tokenRequired
 def createNewRequest(currentUser):
-    #defUsr=defaultuserid
-    #pdb.set_trace()
+
     if not defaultuserid['userid']:
-        response=jsonify({"Message": "You can not access this"})
-        response.status_code = 401#unauthorised
+        response = jsonify({"Message": "You can not access this"})
+        response.status_code = 401  # unauthorised
         return response
     requestorid = defaultuserid['userid']
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
     requesttype = request.json["requesttype"]
-    #requestcreationdate=request.json["requestcreationdate"]
-    requeststatus = 1
 
-    #lastreuestid = requests[-1]["requestid"]
-    #pdb.set_trace()
-    #lastreuestid = str(uuid.uuid4())
+    requeststatus = 1
 
     year = datetime.date.today().strftime("%Y")
     month = datetime.date.today().strftime("%B")
@@ -280,7 +255,7 @@ def createNewRequest(currentUser):
         return response
     else:
         newrequest = {
-            
+
             "requestorid": requestorid,
             "requesttitle": requesttitle,
             "requestdescription": requestdescription,
@@ -289,21 +264,20 @@ def createNewRequest(currentUser):
             "requeststatus": 1
         }
         dbmodel.createRequest(newrequest)
-        #requests.append(newrequest)
+
         response = jsonify(
             {"response": "Created '"+requesttitle+"' request successfully"})
         response.status_code = 200
         return response
 
-#and finally edit a request
-
 
 @app.route('/api/v2/users/requests/<string:requestid>', methods=['PUT'])
 @tokenRequired
 def updateRequest(currentUser, requestid):
-    #pdb.set_trace()
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
+    userid = defaultuserid['userid']
     if not requestid or requestid == None:
         requestid = 0
     try:
@@ -320,17 +294,22 @@ def updateRequest(currentUser, requestid):
         response.status_code = 500
         return response
 
-    theRequests = [
-        request for request in requests if request["requestid"] == requestid]
-
+    theRequests = dbmodel.getOneRequest(userid, requestid)
     if not theRequests:
         response = jsonify(
-            {"respons": "Cannot edit this request because its missing"})
+            {"respons": "Cannot edit this request because it's not yours'"})
         response.status_code = 500
         return response
     else:
         requesttytle = request.json['requesttitle']
         reqdescription = request.json['requestdescription']
+        requesttype = request.json['requesttype']
+
+        if(isinstance(int(requestid), int) == False):
+            response = jsonify(
+                {"requests": "You have entered an invalid request type"})
+            response.status_code = 500
+            return response
 
         if not requesttytle:
             response = jsonify({"response": "Enter request title"})
@@ -345,6 +324,13 @@ def updateRequest(currentUser, requestid):
         else:
             theRequests[0]['requesttitle'] = request.json['requesttitle']
             theRequests[0]['requestdescription'] = request.json['requestdescription']
+            requestUpdates = {
+                "requestid": requestid,
+                "requesttitle": request.json['requesttitle'],
+                "requestdescription": request.json['requestdescription'],
+                "requesttype": requesttype
+            }
+            dbmodel.updateRequest(requestUpdates)
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
             return response

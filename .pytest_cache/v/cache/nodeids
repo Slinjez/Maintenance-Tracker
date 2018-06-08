@@ -1,4 +1,9 @@
 [
+  "tests/test_EditReq.py::TestEditRequest::test_description_missin",
+  "tests/test_EditReq.py::TestEditRequest::test_good_test",
+  "tests/test_EditReq.py::TestEditRequest::test_invalid_requestId",
+  "tests/test_EditReq.py::TestEditRequest::test_title_missing",
+  "tests/test_EditReq.py::TestEditRequest::test_unexisting_requestId",
   "tests/test_GetAllReq.py::TestLogIn::test_JSONgood_request",
   "tests/test_GetAllReq.py::TestLogIn::test_bad_request",
   "tests/test_GetAllReq.py::TestLogIn::test_good_request",
