@@ -85,6 +85,17 @@ class dbOperations():
             #print(theResult)
             return theResult
 
+    def getOneRequest(self,userid,requestid):
+        query="select * from requests where requestorid='{userid}' and requestid='{requestid}'".format(userid=userid,requestid=requestid)
+        theResult=self.getFromDb(query)
+        print(query)
+        if not theResult:
+            return None
+        else:
+            #print(theResult)
+            return theResult
+    
+
 
     def getFromDb(self,query):
         self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")

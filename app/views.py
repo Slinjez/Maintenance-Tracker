@@ -204,7 +204,7 @@ def getAllRequests(currentUser):
 @app.route('/api/v2/users/requests/<string:requestid>', methods=['GET'])
 @tokenRequired
 def getSingleRequest(currentUser, requestid):
-
+    userid=defaultuserid['userid']
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
@@ -227,16 +227,14 @@ def getSingleRequest(currentUser, requestid):
         response.status_code = 405  # Method not allowed
         return response
 
-    theRequests = [
-        request for request in requests if request["requestid"] == requestid]
-
+   
+    theRequests=dbmodel.getOneRequest(userid,requestid)
     if not theRequests:
-        response = jsonify({"requests": "This request does not exist"})
+        response = jsonify({"requests": "You can not view this request"})
         response.status_code = 404
         return response
-        pdb.set_trace()
+        #pdb.set_trace()
     else:
-
         response = jsonify({"requests": theRequests})
         response.status_code = 200
         return response
