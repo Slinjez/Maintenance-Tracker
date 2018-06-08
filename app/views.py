@@ -24,7 +24,7 @@ requests = [
 
 ]
 
-print(defaultuserid)
+
 def tokenRequired(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -34,8 +34,6 @@ def tokenRequired(f):
 
         if not token:
             return jsonify({"message": "Token is missing"}), 401
-
-        #theRequests = [user for user in users if users["userid"] == currentUser]
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
@@ -122,7 +120,7 @@ def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
     hashedpassword = generate_password_hash(userps, method='sha256')
-    #pdb.set_trace()
+    
     if not usermail:
         response = jsonify({"response": "email is required"})
         response.status_code = 400
@@ -149,23 +147,19 @@ def login():
             loginDetails =dbmodel.getLoginCredentials(usermail)
             
             correctps = loginDetails[0]['password']
-            #print(correctps)
-            #pdb.set_trace()
             if check_password_hash(correctps, userps) != True:
-                #print("ps mismatch")
+                
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
                 return response
             else:
                 token = jwt.encode({'publicid': loginDetails[0]['userid'], 'exp': datetime.datetime.utcnow(
                 )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
-                #response = jsonify({"response": "logged in correctly"})
+                
                 response=jsonify({"token": token})
                 response.status_code = 200
                 defaultuserid['userid'] = loginDetails[0]['userid']
-                #defaultuserid=theRequests[0]['userid']
                 
-                #print(token)
                 return response
 
 
@@ -174,18 +168,13 @@ def login():
 @tokenRequired
 def getAllRequests(currentUser):
     userid = defaultuserid['userid']
-    print("user id",userid)
+    
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
     
 
-    #if not request.json["userid"]:
-    #userid=currentUser
-    #pdb.set_trace()
-    #else:
-    #userid=currentUser
-
+    
     
     
     theRequests=dbmodel.getAllRequest(userid)
@@ -208,7 +197,6 @@ def getSingleRequest(currentUser, requestid):
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
-        #requestid = request.json["requestid"]
         response = jsonify(
             {"response": "You have not entered an invalid request id"})
         response.status_code = 405
@@ -244,8 +232,7 @@ def getSingleRequest(currentUser, requestid):
 @app.route('/api/v2/users/requests', methods=['POST'])
 @tokenRequired
 def createNewRequest(currentUser):
-    #defUsr=defaultuserid
-    #pdb.set_trace()
+   
     if not defaultuserid['userid']:
         response=jsonify({"Message": "You can not access this"})
         response.status_code = 401#unauthorised
@@ -254,12 +241,10 @@ def createNewRequest(currentUser):
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
     requesttype = request.json["requesttype"]
-    #requestcreationdate=request.json["requestcreationdate"]
+    
     requeststatus = 1
 
-    #lastreuestid = requests[-1]["requestid"]
-    #pdb.set_trace()
-    #lastreuestid = str(uuid.uuid4())
+    
 
     year = datetime.date.today().strftime("%Y")
     month = datetime.date.today().strftime("%B")
@@ -289,19 +274,19 @@ def createNewRequest(currentUser):
             "requeststatus": 1
         }
         dbmodel.createRequest(newrequest)
-        #requests.append(newrequest)
+        
         response = jsonify(
             {"response": "Created '"+requesttitle+"' request successfully"})
         response.status_code = 200
         return response
 
-#and finally edit a request
+
 
 
 @app.route('/api/v2/users/requests/<string:requestid>', methods=['PUT'])
 @tokenRequired
 def updateRequest(currentUser, requestid):
-    #pdb.set_trace()
+    
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
