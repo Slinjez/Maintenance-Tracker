@@ -59,20 +59,20 @@ class TestLogIn(unittest.TestCase):
         with app.test_client() as c:
             result =c.post('/api/v2/users/login',data=json.dumps(self.requestbadpassword),headers=headers)
             self.assertEqual(result.status_code,400)
-            #self.assertEqual(result.json(), {"response": "Invalid credentials"})
+            
 
     def test_password_is_short(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.post('/api/v2/users/login',data=json.dumps(self.requestshortpassword),headers=headers)
             self.assertEqual(result.status_code,400)
-            #self.assertEqual(result.json(), {"response": "Invalid credentials"})
+            
     def test_login_is_sussessful(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.post('/api/v2/users/login',data=json.dumps(self.requestsuccess),headers=headers)
             self.assertEqual(result.status_code,400)
-            #self.assertEqual(result.json(), {"response": "Invalid credentials"})
+            
     def test_good_dataset(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
