@@ -24,7 +24,7 @@ cursor = connection.cursor()
 # print(tableexist)
 
 cursor.execute("CREATE TABLE IF NOT EXISTS users(userid SERIAL PRIMARY KEY, username varchar(20), useremail varchar(40), password text, userrole int);")
-cursor.execute("CREATE TABLE IF NOT EXISTS requests(requestid SERIAL PRIMARY KEY, requesttitle text, requestdescription text, requesttype int,requestdate timestamp,requeststatus int);")
+cursor.execute("CREATE TABLE IF NOT EXISTS requests(requestid SERIAL PRIMARY KEY,requestorid int, requesttitle text, requestdescription text, requesttype int,requestdate timestamp,requeststatus int);")
 connection.commit()
 cursor.execute("SELECT * FROM users WHERE userrole = 1 and useremail='defadmin@maintrack.com';")
 defaultuser= cursor.fetchone()

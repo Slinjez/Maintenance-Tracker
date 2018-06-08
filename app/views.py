@@ -24,7 +24,7 @@ requests = [
 
 ]
 
-
+print(defaultuserid)
 def tokenRequired(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -173,11 +173,12 @@ def login():
 @app.route('/api/v2/users/requests', methods=['GET'])
 @tokenRequired
 def getAllRequests(currentUser):
-
+    userid = defaultuserid['userid']
+    print("user id",userid)
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
-    userid = defaultuserid['userid']
+    
 
     #if not request.json["userid"]:
     #userid=currentUser
@@ -185,9 +186,9 @@ def getAllRequests(currentUser):
     #else:
     #userid=currentUser
 
-    theRequests = [
-        request for request in requests if request["requestorid"] == userid]
-
+    
+    
+    theRequests=dbmodel.getAllRequest(userid)
     if not theRequests:
         response = jsonify({"requests": "No requests for this user"})
         response.status_code = 404
@@ -287,7 +288,7 @@ def createNewRequest(currentUser):
             "requestdescription": requestdescription,
             "requesttype": requesttype,
             "requestcreationdate": requestcreationdate,
-            "requeststatus": requeststatus
+            "requeststatus": 1
         }
         dbmodel.createRequest(newrequest)
         #requests.append(newrequest)

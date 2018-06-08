@@ -1,3 +1,4 @@
 {
-  "tests/test_CreateReq.py::TestCreateNewRequest": true
+  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_client_with_no_request": true,
+  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_empty_id": true
 }
