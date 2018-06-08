@@ -47,30 +47,55 @@ class dbOperations():
     def createRequest(self,newrequest):
         self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
         self.cursor = self.connection.cursor()
+        requestorid=newrequest['requestorid'],
         requesttitle= newrequest['requesttitle'],
         requestdescription= newrequest['requestdescription'],
         requesttype= newrequest['requesttype'],
         requestcreationdate= dt.now(),
         requeststatus= newrequest['requeststatus']
-        query="insert into users (requesttitle,requestdescription,requesttype,requestdate,requeststatus) values(%s,%s,%s,%s,%s);",(
-            requesttitle,
-            requestdescription,
-            requesttype,
-            requestcreationdate,
-            requeststatus
-        )
+        # query="insert into users (requesttitle,requestdescription,requesttype,requestdate,requeststatus) values(%s,%s,%s,%s,%s);",(
+        #     requesttitle,
+        #     requestdescription,
+        #     requesttype,
+        #     requestcreationdate,
+        #     requeststatus,
+        #     requestorid
+        # )
         #print(query)
         #self.addToDb(query)
-        self.cursor.execute("INSERT INTO requests (requesttitle,requestdescription,requesttype,requestdate,requeststatus) values(%s,%s,%s,%s,%s)",(
+        self.cursor.execute("INSERT INTO requests (requesttitle,requestdescription,requesttype,requestdate,requeststatus,requestorid) values(%s,%s,%s,%s,%s,%s)",(
             requesttitle,
             requestdescription,
             requesttype,
             requestcreationdate,
-            requeststatus))
+            requeststatus,
+            requestorid))
         
         self.connection.commit()
         self.cursor.close()
         self.cursor.close()
+    
+    def getAllRequest(self,userid):
+        query="select * from requests where requestorid='{userid}'".format(userid=userid)
+        theResult=self.getFromDb(query)
+        print(query)
+        if not theResult:
+            return None
+        else:
+            #print(theResult)
+            return theResult
+
+    def getOneRequest(self,userid,requestid):
+        query="select * from requests where requestorid='{userid}' and requestid='{requestid}'".format(userid=userid,requestid=requestid)
+        theResult=self.getFromDb(query)
+        print(query)
+        if not theResult:
+            return None
+        else:
+            #print(theResult)
+            return theResult
+    
+
 
     def getFromDb(self,query):
         self.connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")

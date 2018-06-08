@@ -1,4 +1,13 @@
 [
+  "tests/test_GetAllReq.py::TestLogIn::test_JSONgood_request",
+  "tests/test_GetAllReq.py::TestLogIn::test_bad_request",
+  "tests/test_GetAllReq.py::TestLogIn::test_good_request",
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_empty_id",
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_good_id",
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_invalid_id",
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_missing_request",
+  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_client_with_no_request",
+  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_empty_id",
   "tests/test_login.py::TestLogIn::test_email_not_blank",
   "tests/test_login.py::TestLogIn::test_good_dataset",
   "tests/test_login.py::TestLogIn::test_invalid_email",
