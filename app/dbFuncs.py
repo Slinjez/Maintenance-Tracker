@@ -4,9 +4,12 @@ from datetime import datetime as dt
 
 
 class dbOperations():
-    connection = psycopg2.connect(
-        "dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
-    cursor = connection.cursor()
+
+    def __init__(self, dbname='maintenancetracker'):
+        connection = psycopg2.connect(
+            "dbname='{}' user='postgres' host='localhost' password='admin'"
+            .format(dbname))
+        cursor = connection.cursor()
 
     def confirmNewUser(self, usermail):
         query = "select * from users where useremail='{usermail}'".format(
@@ -90,8 +93,16 @@ class dbOperations():
         if not theResult:
             return None
         else:
-
             return theResult
+
+    def ensureRequestNotCofired(self, requestid):
+        query = "select requeststatus from requests where requestid ={requestid};".format(requestid=requestid)
+        reuslt=self.getFromDb( query)
+        reqstatus=reuslt[0]['requeststatus']
+        if not reqstatus:
+            return None
+        else:
+            return reqstatus
 
     def updateRequest(self, requestUpdates):
         query = """
@@ -116,7 +127,6 @@ class dbOperations():
         return dict_result
         self.connection.commit()
         self.cursor.close()
-        self.cursor.close()
 
     def addToDb(self, query):
         self.connection = psycopg2.connect(
@@ -124,5 +134,4 @@ class dbOperations():
         self.cursor = self.connection.cursor()
         self.cursor.execute(query)
         self.connection.commit()
-        self.cursor.close()
         self.cursor.close()

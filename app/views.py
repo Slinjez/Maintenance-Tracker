@@ -330,7 +330,30 @@ def updateRequest(currentUser, requestid):
                 "requestdescription": request.json['requestdescription'],
                 "requesttype": requesttype
             }
+            editable=dbmodel.ensureRequestNotCofired( requestid)
+            print(editable)
+            if editable['requeststatus']!=1 or not editable:
+                response = jsonify({"response": "This request has been approved and can not be edited."})
+                response.status_code = 400
+                return response
+            
+
             dbmodel.updateRequest(requestUpdates)
-            response = jsonify({"requests": "request edited"})
+            response = jsonify({"requests": "edit done"})
             response.status_code = 200
             return response
+
+@app.errorhandler(404)
+def pageNotFound(error):
+    return jsonify({
+        "Title":"Resource not found",
+        "Message":"This resouce cannot be found"
+
+    })
+@app.errorhandler(404)
+def pageNotFound(error):
+    return jsonify({
+        "Title":"Server Error",
+        "Message":"Can not handle this request now. Try again later"
+
+    })

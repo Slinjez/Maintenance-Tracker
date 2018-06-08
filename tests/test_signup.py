@@ -9,6 +9,8 @@ import unittest
 from flask import request
 import json
 import sys
+import psycopg2
+from dbFuncs import dbOperations
 
 class TestSignup(unittest.TestCase):
     requestalldata = {
@@ -55,7 +57,9 @@ class TestSignup(unittest.TestCase):
     }
 
     def setup(self):
-        
+        self.db = dbOperations('maintenancetracker_test')
+
+    # create the tables
         pass
         
 
@@ -96,7 +100,8 @@ class TestSignup(unittest.TestCase):
             self.assertEqual(result.status_code,400)
 
 
-    
+    def tearDown(self):
+        # delete data from the tables
     
     
 if __name__ == '__main__':

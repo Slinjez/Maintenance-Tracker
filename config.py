@@ -7,8 +7,7 @@ import psycopg2
 connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
 cursor = connection.cursor()
 
-#create tables if non exists
-	
+#create tables if non exists	
 
 # cursor.execute("""
 # SELECT EXISTS 
