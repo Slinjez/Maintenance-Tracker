@@ -59,6 +59,15 @@ class Requests(object):
         self.requestdate=requestdate
         self.requeststatus=requeststatus
     
+    def addRequest(self,requestid,requestorid,requesttitle,requestdescription,requesttype,requestdate,requeststatus):
+        self.requestid=requestid
+        self.requestorid=requestorid
+        self.requesttitle=requesttitle
+        self.requestdescription=requestdescription
+        self.requesttype=requesttype
+        self.requestdate=requestdate
+        self.requeststatus=requeststatus
+    
     def getRequest(self):
         return Requests
 

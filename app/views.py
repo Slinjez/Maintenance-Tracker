@@ -118,7 +118,7 @@ def signup():
 def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
-    
+
     if not usermail:
         response = jsonify({"response": "email is required"})
         response.status_code = 400
@@ -147,7 +147,7 @@ def login():
             correctps = loginDetails[0]['password']
             therole = loginDetails[0]['userrole']
 
-            if check_password_hash(correctps, hashedpassword) != True:
+            if check_password_hash(correctps, userps) != True:
 
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
@@ -163,11 +163,11 @@ def login():
 
                 return response
 
+
 @app.route('/api/v2/login', methods=['POST'])
 def adminLogin():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
-    
 
     if not usermail:
         response = jsonify({"response": "email is required"})
@@ -223,11 +223,16 @@ def getAllRequests(currentUser):
         return jsonify({"Message": "You can not access this"})
 
     theRequests = dbmodel.getAllRequest(userid)
+
     if not theRequests:
         response = jsonify({"requests": "No requests for this user"})
         response.status_code = 404
         return response
     else:
+        for request in theRequests:
+            thisRequest.addRequest(request['requestid'], request['requestorid'], request['requesttitle'],
+                                   request['requestdescription'], request['requesttype'], request['requestdate'], request['requeststatus'])
+
         response = jsonify({"requests": theRequests})
         response.status_code = 200
         return response
@@ -314,7 +319,9 @@ def createNewRequest(currentUser):
             "requestcreationdate": requestcreationdate,
             "requeststatus": 1
         }
-        dbmodel.createRequest(newrequest)
+        #print("main user id"+str(requestorid))
+        thisRequest.setRequest(requestorid,requesttitle,requestdescription,requesttype,requestcreationdate,requeststatus)
+        dbmodel.createRequest(thisRequest)
 
         response = jsonify(
             {"response": "Created '"+requesttitle+"' request successfully"})
@@ -398,6 +405,19 @@ def userLogout():
     return response
 
 
+@app.route('/api/v2/requests', methods=['GET'])
+@tokenRequired
+def getAllRequest(currentUser):
+
+    theRequests = dbmodel.getAllRequestForAdmin()
+    if not theRequests:
+        response = jsonify({"requests": "No requests yet"})
+        response.status_code = 404
+        return response
+    else:
+        response = jsonify({"requests": theRequests})
+        response.status_code = 200
+        return response
 
 
 #handlers

@@ -54,16 +54,18 @@ class dbOperations():
         else:
             return theResult
 
-    def createRequest(self, newrequest):
+    def createRequest(self, thisRequest):
         self.connection = psycopg2.connect(
             "dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
         self.cursor = self.connection.cursor()
-        requestorid = newrequest['requestorid'],
-        requesttitle = newrequest['requesttitle'],
-        requestdescription = newrequest['requestdescription'],
-        requesttype = newrequest['requesttype'],
+        requestorid=thisRequest.requestorid
+        requesttitle = thisRequest.requesttitle,
+        requestdescription = thisRequest.requestdescription,
+        requesttype = thisRequest.requesttype,
         requestcreationdate = dt.now(),
-        requeststatus = newrequest['requeststatus']
+        requeststatus = thisRequest.requeststatus
+        requeststatus=int(requeststatus)
+        #print(""+requestorid)
 
         self.cursor.execute("INSERT INTO requests (requesttitle,requestdescription,requesttype,requestdate,requeststatus,requestorid) values(%s,%s,%s,%s,%s,%s)", (
             requesttitle,
@@ -75,13 +77,13 @@ class dbOperations():
 
         self.connection.commit()
         self.cursor.close()
-        self.cursor.close()
 
     def getAllRequest(self, userid):
+        
         query = "select * from requests where requestorid='{userid}'".format(
             userid=userid)
         theResult = self.getFromDb(query)
-
+        
         if not theResult:
             return None
         else:
