@@ -31,7 +31,7 @@ defaultuser= cursor.fetchone()
 
 if not defaultuser:
     newuserid=str(uuid.uuid4())
-    cursor.execute("INSERT INTO users(username,useremail, password,userrole) VALUES ('default','defadmin@maintrack.com', 'admin',1);")
+    cursor.execute("INSERT INTO users(username,useremail, password,userrole) VALUES ('default','defadmin@maintrack.com', 'sha256$W2aFNlr3$2e5f12eeacb3dd06f8f5874919d7a0cb59c9b3fc1d82e15b4f102f262ca74a7f',1);")
     #connection.commit()
 
 users=cursor.execute("SELECT useremail FROM users;")

@@ -11,10 +11,16 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
+from app.requests import Requests
+from app.user import User
+thisUser = User('', '', '', '', '')
+thisRequest = Requests('', '', '', '', '', '', '')
 from app.dbFuncs import dbOperations
 dbmodel = dbOperations()
 
+
 defaultuserid = {"userid": ""}
+userrole = {"role": ""}
 
 users = [
 
@@ -96,14 +102,9 @@ def signup():
 
         if confirmnewuser == True:
 
-            user = {
-
-                "username": request.json["username"],
-                "useremail": request.json["useremail"],
-                "userpassword": hashedpassword,
-                "userrole": 2
-            }
-            dbmodel.createUser(user)
+            newUser = thisUser.createUser(
+                username, usermail, hashedpassword, 2)
+            dbmodel.saveUser(newUser)
             response = jsonify({"response": "You have succesfully registered"})
             response.status_code = 200
         else:
@@ -117,7 +118,56 @@ def signup():
 def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
-    hashedpassword = generate_password_hash(userps, method='sha256')
+    
+    if not usermail:
+        response = jsonify({"response": "email is required"})
+        response.status_code = 400
+        return response
+
+    elif len(userps) <= 3:
+        response = jsonify(
+            {"response": "Enter a password more than 4 charachters"})
+        response.status_code = 400
+        return response
+
+    elif not userps:
+        response = jsonify({"response": "password is required"})
+        response.status_code = 400
+        return response
+    else:
+        LoginUser = thisUser.createUserEmailOnly(usermail)
+        confirmexistingemail = dbmodel.confirmLogin(LoginUser)
+        if not confirmexistingemail:
+            response = jsonify({"response": "Unregistered email"})
+            response.status_code = 400
+            return response
+        else:
+            loginDetails = dbmodel.getLoginCredentials(LoginUser)
+
+            correctps = loginDetails[0]['password']
+            therole = loginDetails[0]['userrole']
+
+            if check_password_hash(correctps, hashedpassword) != True:
+
+                response = jsonify({"response": "Invalid credentials"})
+                response.status_code = 400
+                return response
+            else:
+                token = jwt.encode({'publicid': loginDetails[0]['userid'], 'therole': therole, 'exp': datetime.datetime.utcnow(
+                )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
+
+                response = jsonify({"token": token})
+                response.status_code = 200
+                defaultuserid['userid'] = loginDetails[0]['userid']
+                userrole['role'] = therole
+
+                return response
+
+@app.route('/api/v2/login', methods=['POST'])
+def adminLogin():
+    usermail = request.json["useremail"]
+    userps = request.json["userpassword"]
+    
 
     if not usermail:
         response = jsonify({"response": "email is required"})
@@ -135,29 +185,30 @@ def login():
         response.status_code = 400
         return response
     else:
-
-        confirmexistingemail = dbmodel.confirmLogin(usermail)
+        LoginUser = thisUser.createUserEmailOnly(usermail)
+        confirmexistingemail = dbmodel.confirmLogin(LoginUser)
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
             response.status_code = 400
             return response
         else:
-            loginDetails = dbmodel.getLoginCredentials(usermail)
+            loginDetails = dbmodel.getLoginCredentials(LoginUser)
 
             correctps = loginDetails[0]['password']
+            therole = loginDetails[0]['userrole']
 
             if check_password_hash(correctps, userps) != True:
-
                 response = jsonify({"response": "Invalid credentials"})
                 response.status_code = 400
                 return response
             else:
-                token = jwt.encode({'publicid': loginDetails[0]['userid'], 'exp': datetime.datetime.utcnow(
+                token = jwt.encode({'publicid': loginDetails[0]['userid'], 'therole': therole, 'exp': datetime.datetime.utcnow(
                 )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
 
                 response = jsonify({"token": token})
                 response.status_code = 200
                 defaultuserid['userid'] = loginDetails[0]['userid']
+                userrole['role'] = therole
 
                 return response
 
@@ -334,3 +385,44 @@ def updateRequest(currentUser, requestid):
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
             return response
+
+
+@app.route('/api/v2/users/logout', methods=['POST'])
+def userLogout():
+
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You are not loged in"})
+    defaultuserid['userid'] = 0
+    response = jsonify({"response": "You have logged out"})
+    response.status_code = 200
+    return response
+
+
+
+
+#handlers
+
+
+@app.errorhandler(404)
+def pageNotFound(error):
+    return jsonify({
+        "Title": "Resource not found",
+        "Message": "This resouce cannot be found"
+
+    })
+
+
+@app.errorhandler(405)
+def notAllowed(error):
+    return jsonify({
+        "Title": "Not allowed",
+        "Message": "You can not do this human. Check the mothod you are using"
+    })
+
+
+@app.errorhandler(500)
+def fiveOo(error):
+    return jsonify({
+        "Title": "Server error",
+        "Message": "Honestly, I din't see that coming."
+    })

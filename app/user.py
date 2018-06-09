@@ -36,3 +36,18 @@ class User:
 
     def getUserRole(self):
         return self.userrole
+
+    def createUser(self,username,useremail,userpassword,userrole):
+        self.username=username
+        self.useremail=useremail
+        self.userpassword=userpassword
+        self.userrole=userrole
+        return self
+    
+    def createUserEmailOnly(self,useremail):
+        self.useremail=useremail
+        return self
+
+    def getUser(self):
+        return User
+

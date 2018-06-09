@@ -1,9 +1,11 @@
 import psycopg2
 import psycopg2.extras
 from datetime import datetime as dt
+import pdb
 
 
 class dbOperations():
+    
     connection = psycopg2.connect(
         "dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
     cursor = connection.cursor()
@@ -17,20 +19,23 @@ class dbOperations():
         else:
             return False
 
-    def createUser(self, user):
-        username = user['username']
-        useremail = user['useremail']
-        userpassword = user['userpassword']
-        userrole = user['userrole']
+    def saveUser(self, newUser):        
+        username=newUser.username
+        useremail=newUser.useremail
+        userpassword=newUser.userpassword
+        userrole=newUser.userrole
+        
         query = "insert into users (username,useremail,password,userrole) values('{username}','{useremail}','{userpassword}','{userrole}')".format(
             username=username,
             useremail=useremail,
             userpassword=userpassword,
-            userrole=userrole
+            userrole=userrole            
         )
         self.addToDb(query)
 
-    def confirmLogin(self, usermail):
+    def confirmLogin(self, theUser):
+        usermail=theUser.useremail
+        
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
@@ -39,7 +44,8 @@ class dbOperations():
         else:
             return True
 
-    def getLoginCredentials(self, usermail):
+    def getLoginCredentials(self, theUser):
+        usermail=theUser.useremail
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
@@ -80,6 +86,15 @@ class dbOperations():
             return None
         else:
 
+            return theResult
+    
+    def getAllRequestForAdmin(self):
+        query = "select * from requests "
+        theResult = self.getFromDb(query)
+
+        if not theResult:
+            return None
+        else:
             return theResult
 
     def getOneRequest(self, userid, requestid):
