@@ -224,6 +224,11 @@ def getAllRequests(currentUser):
 
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
+    myrole = userrole['role']
+    clientrole = 2
+
+    if (myrole != int(clientrole)):
+        return jsonify({"Message": "You can not access this"})
 
     theRequests = dbmodel.getAllRequest(userid)
 
@@ -243,6 +248,11 @@ def getAllRequests(currentUser):
 def getSingleRequest(currentUser, requestid):
     userid = defaultuserid['userid']
     if not defaultuserid['userid']:
+        return jsonify({"Message": "You can not access this"})
+    myrole = userrole['role']
+    clientrole = 2
+
+    if (myrole != int(clientrole)):
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
 
@@ -285,6 +295,11 @@ def createNewRequest(currentUser):
         response = jsonify({"Message": "You can not access this"})
         response.status_code = 401  # unauthorised
         return response
+    myrole = userrole['role']
+    clientrole = 2
+
+    if (myrole != int(clientrole)):
+        return jsonify({"Message": "You can not access this"})
     requestorid = defaultuserid['userid']
     requesttitle = request.json["requesttitle"]
     requestdescription = request.json["requestdescription"]
@@ -336,6 +351,11 @@ def updateRequest(currentUser, requestid):
 
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
+    myrole = userrole['role']
+    clientrole = 2
+
+    if (myrole != int(clientrole)):
+        return jsonify({"Message": "You can not access this"})
     userid = defaultuserid['userid']
     if not requestid or requestid == None:
         requestid = 0
@@ -352,11 +372,18 @@ def updateRequest(currentUser, requestid):
             {"requests": "You have entered an invalid request id"})
         response.status_code = 500
         return response
-
+    canEditRequests = dbmodel.canEditOneRequest(userid, requestid)
+    isapproved=canEditRequests[0]['requeststatus']
+    
+    if(isapproved!=1):
+        response = jsonify(
+            {"respons": "Cannot edit this request because it has been verified by an administrator'"})
+        response.status_code = 400
+        return response
     theRequests = dbmodel.getOneRequest(userid, requestid)
     if not theRequests:
         response = jsonify(
-            {"respons": "Cannot edit this request because it's not yours'"})
+            {"respons": "Cannot edit this request'"})
         response.status_code = 500
         return response
     else:
@@ -585,7 +612,73 @@ def disapproveRequest(currentUser, requestId):
             response.status_code = 200
             return response
 
+@app.route('/api/v2/requests/<string:requestId>/resolve', methods=['PUT'])
+@tokenRequired
+def resolveRequest(currentUser, requestId):
+    print("admin put1")
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You can not access this"})
 
+    if not userrole['role']:
+        return jsonify({"Message": "You can not access this"})
+
+    myrole = userrole['role']
+    adminrole = 1
+
+    if (myrole != int(adminrole)):
+        return jsonify({"Message": "You can not access this"})
+    requestid = requestId
+    if not requestid:
+        requestid = 0
+    try:
+        if requestid is None or isinstance(int(requestid), int) == False:
+            response = jsonify(
+                {"requests": "You have entered an invalid request id"})
+            response.status_code = 500
+            return response
+        else:
+            requestid = int(requestid)
+    except:
+        response = jsonify(
+            {"requests": "You have entered an invalid request id"})
+        response.status_code = 400
+        return response
+
+    theRequests = dbmodel.getOneRequestForAdmin(requestid)
+    if not theRequests:
+        response = jsonify(
+            {"respons": "Cannot edit this request because it does not exist'"})
+        response.status_code = 400
+        return response
+    else:
+
+        requeststatus = request.json['requeststatus']
+
+        if(isinstance(int(requeststatus), int) == False):
+            response = jsonify(
+                {"requests": "You have entered an invalid request status"})
+            response.status_code = 400
+            return response
+        elif (requeststatus != 4):
+            response = jsonify(
+                {"requests": "Request status must be either 4 or yeah, just 4"})
+            response.status_code = 400
+            return response
+        else:
+
+            if(requeststatus == 4):
+                msg = "Resolved"
+
+            theRequests[0]['requeststatus'] = request.json['requeststatus']
+            requestUpdates = {
+                "requestid": requestid,
+                "requeststatus": requeststatus
+            }
+
+            dbmodel.verifyRequest(requestUpdates)
+            response = jsonify({"requests": "request resolved"})
+            response.status_code = 200
+            return response
 #handlers
 
 
@@ -611,4 +704,11 @@ def fiveOo(error):
     return jsonify({
         "Title": "Server error",
         "Message": "Honestly, I din't see that coming."
+    })
+
+@app.errorhandler(400)
+def fourOo(error):
+    return jsonify({
+        "Title": "Bad request",
+        "Message": "Something is not right...contact admin."
     })

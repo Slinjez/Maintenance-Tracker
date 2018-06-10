@@ -143,6 +143,16 @@ class dbOperations():
 
             return theResult
 
+    def canEditOneRequest(self, userid, requestid):
+        query = "select * from requests where requestid='{requestid}'".format(
+            requestid=requestid)
+        theResult = self.getFromDb(query)
+        #print(theResult)
+        if not theResult:
+            return None
+        else:
+            return theResult
+
     def updateRequest(self, requestUpdates):
         query = """
             UPDATE requests
