@@ -187,14 +187,15 @@ def adminLogin():
         response.status_code = 400
         return response
     else:
-        LoginUser = User(usermail)
-        confirmexistingemail = dbmodel.confirmLogin(LoginUser)
+
+        confirmexistingemail = dbmodel.confirmAdminLogin(usermail)
+
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
             response.status_code = 400
             return response
         else:
-            loginDetails = dbmodel.getLoginCredentials(LoginUser)
+            loginDetails = dbmodel.getAdminLoginCredentials(usermail)
 
             correctps = loginDetails[0]['password']
             therole = loginDetails[0]['userrole']
@@ -405,6 +406,7 @@ def userLogout():
     response.status_code = 200
     return response
 
+
 @app.route('/api/v2/logout', methods=['POST'])
 def adminLogout():
 
@@ -446,10 +448,10 @@ def getAllRequest(currentUser):
 #admin approve
 
 
-@app.route('/api/v2/requests/<string:requestId>/approve', methods=['GET'])
+@app.route('/api/v2/requests/<string:requestId>/approve', methods=['PUT'])
 @tokenRequired
-def approveRequest(currentUser,requestId):
-
+def approveRequest(currentUser, requestId):
+    print("admin put1")
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
@@ -461,7 +463,7 @@ def approveRequest(currentUser,requestId):
 
     if (myrole != int(adminrole)):
         return jsonify({"Message": "You can not access this"})
-    requestid=requestId
+    requestid = requestId
     if not requestid:
         requestid = 0
     try:
@@ -485,24 +487,27 @@ def approveRequest(currentUser,requestId):
         response.status_code = 500
         return response
     else:
-        
+
         requeststatus = request.json['requeststatus']
 
         if(isinstance(int(requeststatus), int) == False):
             response = jsonify(
                 {"requests": "You have entered an invalid request status"})
             response.status_code = 500
-            return response  
-        elif (requeststatus!=1) or (requeststatus!=2) or (requeststatus!=3):
+            return response
+        elif (requeststatus < 1) or (requeststatus > 3):
             response = jsonify(
                 {"requests": "Request status must be either 1,2 or 3"})
             response.status_code = 500
             return response
         else:
-            
+
+            if(requeststatus == 2):
+                msg = "approved"
+
             theRequests[0]['requeststatus'] = request.json['requeststatus']
             requestUpdates = {
-                "requestid": requestid,                
+                "requestid": requestid,
                 "requeststatus": requeststatus
             }
 

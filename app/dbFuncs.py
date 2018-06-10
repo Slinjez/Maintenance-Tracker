@@ -39,6 +39,19 @@ class dbOperations():
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
+        
+        if not theResult:
+            return False
+        else:
+            return True
+    
+    def confirmAdminLogin(self, theMail):
+        usermail=theMail
+        
+        query = "select * from users where useremail='{usermail}'".format(
+            usermail=usermail)
+        theResult = self.getFromDb(query)
+        
         if not theResult:
             return False
         else:
@@ -46,6 +59,16 @@ class dbOperations():
 
     def getLoginCredentials(self, theUser):
         usermail=theUser.useremail
+        query = "select * from users where useremail='{usermail}'".format(
+            usermail=usermail)
+        theResult = self.getFromDb(query)
+        if not theResult:
+            return None
+        else:
+            return theResult
+    
+    def getAdminLoginCredentials(self, theUserEmail):
+        usermail=theUserEmail
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
@@ -134,12 +157,10 @@ class dbOperations():
     def verifyRequest(self, requestUpdates):
         query = """
             UPDATE requests
-            SET requeststatus = '{reueststatus}',
-                requestdescription = '{requestdescription}' ,
-                requesttype = '{requesttype}' 
+            SET requeststatus = '{reueststatus}'
             WHERE
             requestid='{requestid}';
-        """.format(reueststatus=requestUpdates['reueststatus'] )
+        """.format(reueststatus=requestUpdates['requeststatus'],requestid=requestUpdates['requestid'] )
         self.addToDb(query)
 
     def getFromDb(self, query):
