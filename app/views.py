@@ -495,9 +495,9 @@ def approveRequest(currentUser, requestId):
                 {"requests": "You have entered an invalid request status"})
             response.status_code = 500
             return response
-        elif (requeststatus < 1) or (requeststatus > 3):
+        elif (requeststatus != 2):
             response = jsonify(
-                {"requests": "Request status must be either 1,2 or 3"})
+                {"requests": "Request status must be either 2 or yeah, just 2"})
             response.status_code = 500
             return response
         else:
@@ -513,6 +513,75 @@ def approveRequest(currentUser, requestId):
 
             dbmodel.verifyRequest(requestUpdates)
             response = jsonify({"requests": "request approved"})
+            response.status_code = 200
+            return response
+
+
+@app.route('/api/v2/requests/<string:requestId>/disapprove', methods=['PUT'])
+@tokenRequired
+def disapproveRequest(currentUser, requestId):
+    print("admin put1")
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You can not access this"})
+
+    if not userrole['role']:
+        return jsonify({"Message": "You can not access this"})
+
+    myrole = userrole['role']
+    adminrole = 1
+
+    if (myrole != int(adminrole)):
+        return jsonify({"Message": "You can not access this"})
+    requestid = requestId
+    if not requestid:
+        requestid = 0
+    try:
+        if requestid is None or isinstance(int(requestid), int) == False:
+            response = jsonify(
+                {"requests": "You have entered an invalid request id"})
+            response.status_code = 500
+            return response
+        else:
+            requestid = int(requestid)
+    except:
+        response = jsonify(
+            {"requests": "You have entered an invalid request id"})
+        response.status_code = 400
+        return response
+
+    theRequests = dbmodel.getOneRequestForAdmin(requestid)
+    if not theRequests:
+        response = jsonify(
+            {"respons": "Cannot edit this request because it does not exist'"})
+        response.status_code = 400
+        return response
+    else:
+
+        requeststatus = request.json['requeststatus']
+
+        if(isinstance(int(requeststatus), int) == False):
+            response = jsonify(
+                {"requests": "You have entered an invalid request status"})
+            response.status_code = 400
+            return response
+        elif (requeststatus != 3):
+            response = jsonify(
+                {"requests": "Request status must be either 3 or yeah, just 3"})
+            response.status_code = 400
+            return response
+        else:
+
+            if(requeststatus == 3):
+                msg = "Disapproved"
+
+            theRequests[0]['requeststatus'] = request.json['requeststatus']
+            requestUpdates = {
+                "requestid": requestid,
+                "requeststatus": requeststatus
+            }
+
+            dbmodel.verifyRequest(requestUpdates)
+            response = jsonify({"requests": "request Disapproved"})
             response.status_code = 200
             return response
 
