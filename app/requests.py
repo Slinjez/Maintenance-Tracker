@@ -1,7 +1,7 @@
 class Requests(object):
 
-    def __init__(self,requestorid, requestid, requesttitle, requestdescription, requesttype, requestdate, requeststatus):
-        self.requestid = requestid
+    def __init__(self,requestorid=0, requesttitle='', requestdescription='', requesttype=0, requestdate='', requeststatus=0):
+        
         self.requesttitle = requesttitle
         self.requestdescription = requestdescription
         self.requesttype = requesttype
@@ -9,8 +9,7 @@ class Requests(object):
         self.requeststatus = requeststatus
         self.requestorid=requestorid
 
-    def setRequestd(self, requestid):
-        self.requestid
+    
 
     def setRequestoId(self,requestorid):
         self.requestorid=requestorid
@@ -68,6 +67,18 @@ class Requests(object):
         self.requestdate=requestdate
         self.requeststatus=requeststatus
     
+    def updateRequest(self,requestid,requesttitle,requestdescription,requesttype):
+        self.requestid=requestid
+        self.requesttitle=requesttitle
+        self.requestdescription=requestdescription
+        self.requesttype=requesttype
+    
     def getRequest(self):
         return Requests
+
+class Request(Requests):
+    pass
+
+class Maintenance(Requests):
+    pass
 

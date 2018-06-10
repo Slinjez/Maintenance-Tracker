@@ -13,8 +13,8 @@ import jwt
 from functools import wraps
 from app.requests import Requests
 from app.user import User
-thisUser = User('', '', '', '', '')
-thisRequest = Requests('', '', '', '', '', '', '')
+#thisUser = User('', '', '', '', '')
+#thisRequest = Requests('', '', '', '', '', '', '')
 from app.dbFuncs import dbOperations
 dbmodel = dbOperations()
 
@@ -101,9 +101,9 @@ def signup():
         confirmnewuser = dbmodel.confirmNewUser(usermail)
 
         if confirmnewuser == True:
+            userrole = 2
+            newUser = User(username, usermail, hashedpassword, userrole)
 
-            newUser = thisUser.createUser(
-                username, usermail, hashedpassword, 2)
             dbmodel.saveUser(newUser)
             response = jsonify({"response": "You have succesfully registered"})
             response.status_code = 200
@@ -135,7 +135,10 @@ def login():
         response.status_code = 400
         return response
     else:
-        LoginUser = thisUser.createUserEmailOnly(usermail)
+        #LoginUser=User('', usermail, userps, '')
+        #pdb.set_trace()
+        LoginUser = User(useremail=usermail)
+        #pdb.set_trace()
         confirmexistingemail = dbmodel.confirmLogin(LoginUser)
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
@@ -185,7 +188,7 @@ def adminLogin():
         response.status_code = 400
         return response
     else:
-        LoginUser = thisUser.createUserEmailOnly(usermail)
+        LoginUser = User(usermail)
         confirmexistingemail = dbmodel.confirmLogin(LoginUser)
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
@@ -229,9 +232,6 @@ def getAllRequests(currentUser):
         response.status_code = 404
         return response
     else:
-        for request in theRequests:
-            thisRequest.addRequest(request['requestid'], request['requestorid'], request['requesttitle'],
-                                   request['requestdescription'], request['requesttype'], request['requestdate'], request['requeststatus'])
 
         response = jsonify({"requests": theRequests})
         response.status_code = 200
@@ -320,8 +320,9 @@ def createNewRequest(currentUser):
             "requeststatus": 1
         }
         #print("main user id"+str(requestorid))
-        thisRequest.setRequest(requestorid,requesttitle,requestdescription,requesttype,requestcreationdate,requeststatus)
-        dbmodel.createRequest(thisRequest)
+        myrequest = Requests(requestorid, requesttitle, requestdescription,
+                             requesttype, requestcreationdate, requeststatus)
+        dbmodel.createRequest(myrequest)
 
         response = jsonify(
             {"response": "Created '"+requesttitle+"' request successfully"})
@@ -388,6 +389,7 @@ def updateRequest(currentUser, requestid):
                 "requestdescription": request.json['requestdescription'],
                 "requesttype": requesttype
             }
+
             dbmodel.updateRequest(requestUpdates)
             response = jsonify({"requests": "request edited"})
             response.status_code = 200
@@ -404,10 +406,23 @@ def userLogout():
     response.status_code = 200
     return response
 
+#admin get all
+
 
 @app.route('/api/v2/requests', methods=['GET'])
 @tokenRequired
 def getAllRequest(currentUser):
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You can not access this"})
+
+    if not userrole['role']:
+        return jsonify({"Message": "You can not access this"})
+
+    myrole = userrole['role']
+    adminrole = 1
+
+    if (myrole != int(adminrole)):
+        return jsonify({"Message": "You can not access this"})
 
     theRequests = dbmodel.getAllRequestForAdmin()
     if not theRequests:
@@ -419,6 +434,22 @@ def getAllRequest(currentUser):
         response.status_code = 200
         return response
 
+#admin approve
+
+
+@app.route('/api/v2/requests/<requestId>/approve', methods=['GET'])
+@tokenRequired
+def approveRequest(currentUser):
+
+    theRequests = dbmodel.getAllRequestForAdmin()
+    if not theRequests:
+        response = jsonify({"requests": "No requests yet"})
+        response.status_code = 404
+        return response
+    else:
+        response = jsonify({"requests": theRequests})
+        response.status_code = 200
+        return response
 
 #handlers
 

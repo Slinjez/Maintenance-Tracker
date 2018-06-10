@@ -1,14 +1,14 @@
+
 class User:
 
-    def __init__(self, userid, username, useremail, userpassword, userrole):
-        self.userid = userid
+    def __init__(self, username="", useremail="", userpassword="", userrole=""):
+        
         self.username = username
         self.useremail = useremail
         self.userpassword = userpassword
         self.userrole = userrole
 
-    def setUserId(self, userid):
-        self.userid = userid
+    
 
     def setUserName(self, username):
         self.username = username
@@ -21,9 +21,6 @@ class User:
 
     def setUserRole(self, userrole):
         self.userrole = userrole
-
-    def getUserId(self):
-        return self.userid
 
     def getUserName(self):
         return self.username
@@ -38,6 +35,7 @@ class User:
         return self.userrole
 
     def createUser(self,username,useremail,userpassword,userrole):
+        #pdb.set_trace()
         self.username=username
         self.useremail=useremail
         self.userpassword=userpassword
@@ -46,8 +44,35 @@ class User:
     
     def createUserEmailOnly(self,useremail):
         self.useremail=useremail
-        return self
+        return User
 
     def getUser(self):
         return User
+
+
+class Client(User):
+    def createRequest(self):
+        pass
+
+    def editRequest(self):
+        pass
+    
+    def deleteRequest(self):
+        pass
+
+
+class Admin(User):
+    def approveRequest(self):
+        pass
+    
+    def disApproveRequest(self):
+        pass
+
+    def resolveRequest(self):
+        pass
+
+
+
+
+
 
