@@ -63,38 +63,38 @@ class TestSignupV2(unittest.TestCase):
     def test_unername_blank(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/signup',data=json.dumps(self.requestnousername),headers=headers)
+            result =c.post('/api/v2/auth/signup',data=json.dumps(self.requestnousername),headers=headers)
             self.assertEqual(result.status_code,400)
     
 
     def test_email_not_blank(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v2/users/signup',data=json.dumps(self.requestnoemail), headers=headers)
+            result = c.post('/api/v2/auth/signup',data=json.dumps(self.requestnoemail), headers=headers)
             self.assertEqual(result.status_code,400)
     
     def test_password1_not_blank(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v2/users/signup',data=json.dumps(self.requestnops1), headers=headers)
+            result = c.post('/api/v2/auth/signup',data=json.dumps(self.requestnops1), headers=headers)
             self.assertEqual(result.status_code,400)
     
     def test_password2_not_blank(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v2/users/signup',data=json.dumps(self.requestnops2), headers=headers)
+            result = c.post('/api/v2/auth/signup',data=json.dumps(self.requestnops2), headers=headers)
             self.assertEqual(result.status_code,400)
     
     def test_passwords_match(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v2/users/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
+            result = c.post('/api/v2/auth/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
             self.assertEqual(result.status_code,400)
     
     def test_passwords_length(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result = c.post('/api/v2/users/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
+            result = c.post('/api/v2/auth/signup',data=json.dumps(self.requestmissmatchps), headers=headers)
             self.assertEqual(result.status_code,400)
 
 

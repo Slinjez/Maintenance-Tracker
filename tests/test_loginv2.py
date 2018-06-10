@@ -36,89 +36,89 @@ class TestLogIn(unittest.TestCase):
     def test_email_not_blank(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestnoemail),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestnoemail),headers=headers)
             self.assertEqual(result.status_code,400)
             #self.assertEqual(result.json(), {"response": "email is required"})
 
     def test_password_not_blank(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestnopassword),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestnopassword),headers=headers)
             self.assertEqual(result.status_code,400)
             #self.assertEqual(result.json(), {"response": "password is required"})
 
     def test_test_email_is_existing(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestnotexisting),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestnotexisting),headers=headers)
             self.assertEqual(result.status_code,400)
             #self.assertEqual(result.json(), {"response": "Unregistered email"})
 
     def test_password_is_correct(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestbadpassword),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestbadpassword),headers=headers)
             self.assertEqual(result.status_code,400)
             
 
     def test_password_is_short(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestshortpassword),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestshortpassword),headers=headers)
             self.assertEqual(result.status_code,400)
             
     def test_login_is_sussessful(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.requestsuccess),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.requestsuccess),headers=headers)
             self.assertEqual(result.status_code,400)
             
     def test_good_dataset(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.gooddataset),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.gooddataset),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_no_email(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.noemailds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.noemailds),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_invalid_email(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.invalidemailds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.invalidemailds),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_no_ps(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.nopsds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.nopsds),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_short_ps(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.shortpsds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.shortpsds),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_wrong_ps(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.wrongpsds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.wrongpsds),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_unreg_email(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.unregisteredemail),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.unregisteredemail),headers=headers)
         self.assertEqual(result.status_code,400)
 
     def test_vshortps_email(self):        
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
-            result =c.post('/api/v2/users/login',data=json.dumps(self.shortpsds),headers=headers)
+            result =c.post('/api/v2/auth/login',data=json.dumps(self.shortpsds),headers=headers)
         self.assertEqual(result.status_code,400)
 
 

@@ -5,7 +5,7 @@ import datetime
 
 import os
 from app import app
-import pdb
+
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -53,7 +53,7 @@ def index():
     return "will be back with the ui soon"
 
 
-@app.route('/api/v2/users/signup', methods=['POST'])
+@app.route('/api/v2/auth/signup', methods=['POST'])
 def signup():
     username = request.json["username"]
     usermail = request.json["useremail"]
@@ -111,7 +111,7 @@ def signup():
         return response
 
 
-@app.route('/api/v2/users/login', methods=['POST'])
+@app.route('/api/v2/auth/login', methods=['POST'])
 def login():
     usermail = request.json["useremail"]
     userps = request.json["userpassword"]
@@ -158,9 +158,9 @@ def login():
                 defaultuserid['userid'] = loginDetails[0]['userid']
                 userrole['role'] = therole
 
-                response = jsonify({"token": token,"userid":loginDetails[0]['userid'],"userrole":therole})
+                response = jsonify(
+                    {"token": token, "userid": loginDetails[0]['userid'], "userrole": therole})
                 response.status_code = 200
-                
 
                 return response
 
@@ -220,7 +220,7 @@ def adminLogin():
 @tokenRequired
 def getAllRequests(currentUser):
     userid = defaultuserid['userid']
-    pdb.set_trace()
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "Forbiden access"})
 
