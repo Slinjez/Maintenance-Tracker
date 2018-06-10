@@ -7,14 +7,13 @@ import datetime
 import pdb
 import os
 from app import app
+
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
 from app.requests import Requests
 from app.user import User
-#thisUser = User('', '', '', '', '')
-#thisRequest = Requests('', '', '', '', '', '', '')
 from app.dbFuncs import dbOperations
 dbmodel = dbOperations()
 
@@ -406,6 +405,16 @@ def userLogout():
     response.status_code = 200
     return response
 
+@app.route('/api/v2/logout', methods=['POST'])
+def adminLogout():
+
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You are not loged in"})
+    defaultuserid['userid'] = 0
+    response = jsonify({"response": "You have logged out"})
+    response.status_code = 200
+    return response
+
 #admin get all
 
 
@@ -437,19 +446,71 @@ def getAllRequest(currentUser):
 #admin approve
 
 
-@app.route('/api/v2/requests/<requestId>/approve', methods=['GET'])
+@app.route('/api/v2/requests/<string:requestId>/approve', methods=['GET'])
 @tokenRequired
-def approveRequest(currentUser):
+def approveRequest(currentUser,requestId):
 
-    theRequests = dbmodel.getAllRequestForAdmin()
+    if not defaultuserid['userid']:
+        return jsonify({"Message": "You can not access this"})
+
+    if not userrole['role']:
+        return jsonify({"Message": "You can not access this"})
+
+    myrole = userrole['role']
+    adminrole = 1
+
+    if (myrole != int(adminrole)):
+        return jsonify({"Message": "You can not access this"})
+    requestid=requestId
+    if not requestid:
+        requestid = 0
+    try:
+        if requestid is None or isinstance(int(requestid), int) == False:
+            response = jsonify(
+                {"requests": "You have entered an invalid request id"})
+            response.status_code = 500
+            return response
+        else:
+            requestid = int(requestid)
+    except:
+        response = jsonify(
+            {"requests": "You have entered an invalid request id"})
+        response.status_code = 500
+        return response
+
+    theRequests = dbmodel.getOneRequestForAdmin(requestid)
     if not theRequests:
-        response = jsonify({"requests": "No requests yet"})
-        response.status_code = 404
+        response = jsonify(
+            {"respons": "Cannot edit this request because it does not exist'"})
+        response.status_code = 500
         return response
     else:
-        response = jsonify({"requests": theRequests})
-        response.status_code = 200
-        return response
+        
+        requeststatus = request.json['requeststatus']
+
+        if(isinstance(int(requeststatus), int) == False):
+            response = jsonify(
+                {"requests": "You have entered an invalid request status"})
+            response.status_code = 500
+            return response  
+        elif (requeststatus!=1) or (requeststatus!=2) or (requeststatus!=3):
+            response = jsonify(
+                {"requests": "Request status must be either 1,2 or 3"})
+            response.status_code = 500
+            return response
+        else:
+            
+            theRequests[0]['requeststatus'] = request.json['requeststatus']
+            requestUpdates = {
+                "requestid": requestid,                
+                "requeststatus": requeststatus
+            }
+
+            dbmodel.verifyRequest(requestUpdates)
+            response = jsonify({"requests": "request approved"})
+            response.status_code = 200
+            return response
+
 
 #handlers
 

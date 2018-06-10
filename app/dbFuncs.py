@@ -107,6 +107,16 @@ class dbOperations():
         if not theResult:
             return None
         else:
+            return theResult
+
+    def getOneRequestForAdmin(self, requestid):
+        query = "select * from requests where requestid='{requestid}'".format(
+            requestid=requestid)
+        theResult = self.getFromDb(query)
+
+        if not theResult:
+            return None
+        else:
 
             return theResult
 
@@ -119,6 +129,17 @@ class dbOperations():
             WHERE
             requestid='{requestid}';
         """.format(requesttitle=requestUpdates['requesttitle'], requestdescription=requestUpdates['requestdescription'], requesttype=requestUpdates['requesttype'],requestid=requestUpdates['requestid'])
+        self.addToDb(query)
+
+    def verifyRequest(self, requestUpdates):
+        query = """
+            UPDATE requests
+            SET requeststatus = '{reueststatus}',
+                requestdescription = '{requestdescription}' ,
+                requesttype = '{requesttype}' 
+            WHERE
+            requestid='{requestid}';
+        """.format(reueststatus=requestUpdates['reueststatus'] )
         self.addToDb(query)
 
     def getFromDb(self, query):
