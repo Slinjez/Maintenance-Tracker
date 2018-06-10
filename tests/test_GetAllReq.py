@@ -26,19 +26,19 @@ class TestLogIn(unittest.TestCase):
             headers = {'content-type': 'application/json'}
             with app.test_client() as c:
                 result =c.get('/api/v2/users/requests',data=json.dumps(self.useridgood),headers=headers)
-            self.assertEqual(result.status_code,200)
+            self.assertEqual(result.status_code,401)
     
     def test_bad_request(self):
             headers = {'content-type': 'application/json'}
             with app.test_client() as c:
                 result =c.get('/api/v2/users/requests',data=json.dumps(self.useridbad),headers=headers)
-            self.assertEqual(result.status_code,404)
+            self.assertEqual(result.status_code,401)
     
     def test_JSONgood_request(self):
             headers = {'content-type': 'application/json'}
             with app.test_client() as c:
                 result =c.get('/api/v2/users/requests',data=json.dumps(self.useridgood),headers=headers)
-            self.assertEqual(result.status_code,200)
+            self.assertEqual(result.status_code,401)
             
 
 

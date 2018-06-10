@@ -252,7 +252,6 @@ def getSingleRequest(currentUser, requestid):
     if (myrole != int(clientrole)):
         return jsonify({"Message": "You can not access this"})
     if not requestid or requestid == None:
-
         response = jsonify(
             {"response": "You have not entered an invalid request id"})
         response.status_code = 405

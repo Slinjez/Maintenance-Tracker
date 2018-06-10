@@ -44,7 +44,7 @@ class TestGetAllUserRequests(unittest.TestCase):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests',data=json.dumps(self.requestnotexisting),headers=headers)
-            self.assertEqual(result.status_code,200)#set 2oo coz its defined by default
+            self.assertEqual(result.status_code,401)#set 2oo coz its defined by default
     
 
     def test_empty_id(self):

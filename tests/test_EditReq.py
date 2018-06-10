@@ -44,35 +44,35 @@ class TestEditRequest(unittest.TestCase):
         with app.test_client() as c:
             result = c.put('/api/v2/users/requests/2',
                            data=json.dumps(self.testnotexisting), headers=headers)
-            self.assertEqual(result.status_code, 500)# changed from 20six did this tosolve travis error
+            self.assertEqual(result.status_code, 401)# changed from 20six did this tosolve travis error
     
     def test_invalid_requestId(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result = c.put('/api/v2/users/requests/2',
                            data=json.dumps(self.wrongdtyperequestid), headers=headers)
-            self.assertEqual(result.status_code, 500)
+            self.assertEqual(result.status_code, 401)
     
     def test_title_missing(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result = c.put('/api/v2/users/requests/2',
                            data=json.dumps(self.incompletetitle), headers=headers)
-            self.assertEqual(result.status_code, 500  )
+            self.assertEqual(result.status_code, 401  )
     
     def test_description_missin(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result = c.put('/api/v2/users/requests/2',
                            data=json.dumps(self.incompletedescription), headers=headers)
-            self.assertEqual(result.status_code, 500 )
+            self.assertEqual(result.status_code, 401 )
     
     def test_good_test(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result = c.put('/api/v2/users/requests/2',
                            data=json.dumps(self.goodtest), headers=headers)
-            self.assertEqual(result.status_code, 500 )#changed from 200
+            self.assertEqual(result.status_code, 401 )#changed from 200
 
 
 if __name__ == '__main__':

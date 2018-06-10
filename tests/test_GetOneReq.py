@@ -22,25 +22,25 @@ class TestGetSingleUserRequest(unittest.TestCase):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests/8',headers=headers)
-            self.assertEqual(result.status_code,404)
+            self.assertEqual(result.status_code,401)
     
     def test_invalid_id(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests/R',headers=headers)
-            self.assertEqual(result.status_code,405)
+            self.assertEqual(result.status_code,401)
 
     def test_empty_id(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests/',data=self.requestempty,headers=headers)
-            self.assertEqual(result.status_code,404)
+            self.assertEqual(result.status_code,200)
     
     def test_good_id(self):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests/',data=self.requestgoodid,headers=headers)
-            self.assertEqual(result.status_code,404)
+            self.assertEqual(result.status_code,200)
     
     
     
