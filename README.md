@@ -43,9 +43,12 @@ $ python run.py
 
 ### Proposed UI
 https://slinjez.github.io/Maintenance-Tracker/UI/
+
 ![alt text](https://ibb.co/gQRL3T)
 https://ibb.co/gQRL3T
+
 https://ibb.co/iLPUxo
+
 https://ibb.co/kAyYOT
 
 
