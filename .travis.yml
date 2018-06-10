@@ -1,12 +1,16 @@
 language: python
-python::
+python:
+  
   - "2.7"
   - "3.4"
   - "3.6.1"
 
 install: pip install -r requirements.txt
-before_script: - psql -c 'create database maintenancetracker;' -U postgres 
-python config.py
+services: 
+  - postgresql
+before_script: 
+  - psql -c 'create database maintenancetracker;' -U postgres 
+  - python config.py
 
 script: py.test --cov=tests 
 
