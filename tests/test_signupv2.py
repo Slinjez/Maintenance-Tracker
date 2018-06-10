@@ -10,7 +10,7 @@ from flask import request
 import json
 import sys
 
-class TestSignup(unittest.TestCase):
+class TestSignupV2(unittest.TestCase):
     requestalldata = {
         "username": "aname",
         "useremail": "somemail@mail",
@@ -56,7 +56,7 @@ class TestSignup(unittest.TestCase):
 
     def setup(self):
         
-        pass
+        
         
 
     def test_unername_blank(self):
