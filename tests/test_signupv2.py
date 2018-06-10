@@ -53,6 +53,7 @@ class TestSignupV2(unittest.TestCase):
         "userpassword": "apassword",
         "userpassword2": "forgot my password"
     }
+    defaultuserid=""
 
     def setup(self):
         pass
@@ -64,6 +65,7 @@ class TestSignupV2(unittest.TestCase):
         with app.test_client() as c:
             result =c.post('/api/v2/users/signup',data=json.dumps(self.requestnousername),headers=headers)
             self.assertEqual(result.status_code,400)
+    
 
     def test_email_not_blank(self):
         headers = {'content-type': 'application/json'}

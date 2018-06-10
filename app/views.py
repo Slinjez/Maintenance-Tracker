@@ -5,7 +5,7 @@ import datetime
 
 import os
 from app import app
-
+import pdb
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -155,10 +155,12 @@ def login():
                 token = jwt.encode({'publicid': loginDetails[0]['userid'], 'therole': therole, 'exp': datetime.datetime.utcnow(
                 )+datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode("utf-8"), 200
 
-                response = jsonify({"token": token})
-                response.status_code = 200
                 defaultuserid['userid'] = loginDetails[0]['userid']
                 userrole['role'] = therole
+
+                response = jsonify({"token": token,"userid":loginDetails[0]['userid'],"userrole":therole})
+                response.status_code = 200
+                
 
                 return response
 
@@ -218,9 +220,10 @@ def adminLogin():
 @tokenRequired
 def getAllRequests(currentUser):
     userid = defaultuserid['userid']
-
+    pdb.set_trace()
     if not defaultuserid['userid']:
-        return jsonify({"Message": "You can not access this"})
+        return jsonify({"Message": "Forbiden access"})
+
     myrole = userrole['role']
     clientrole = 2
 
