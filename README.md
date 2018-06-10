@@ -44,11 +44,11 @@ $ python run.py
 ### Proposed UI
 https://slinjez.github.io/Maintenance-Tracker/UI/
 
-![alt text](https://ibb.co/gQRL3T)
-https://ibb.co/gQRL3T
+![1](https://user-images.githubusercontent.com/8165854/41207123-ac20c86e-6d18-11e8-8cfd-208570dbac7c.png)
 
-https://ibb.co/iLPUxo
+![2](https://user-images.githubusercontent.com/8165854/41207128-c8b25a2e-6d18-11e8-9e22-3f2fc65056b6.png)
 
-https://ibb.co/kAyYOT
+![3](https://user-images.githubusercontent.com/8165854/41207133-eb96743a-6d18-11e8-8292-78f782bf157a.png)
+
 
 
