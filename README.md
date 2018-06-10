@@ -41,5 +41,11 @@ $ python run.py
 | PUT /requests/<requestId>/resolve | Resolve request |
 | PUT /requests/logout | Logout from system |
 
+### Proposed UI
+https://slinjez.github.io/Maintenance-Tracker/UI/
+![alt text](https://ibb.co/gQRL3T)
+https://ibb.co/gQRL3T
+https://ibb.co/iLPUxo
+https://ibb.co/kAyYOT
 
 
