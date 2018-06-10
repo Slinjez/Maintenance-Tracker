@@ -1,11 +1,10 @@
 import psycopg2
 import psycopg2.extras
 from datetime import datetime as dt
-import pdb
 
 
 class dbOperations():
-    
+
     connection = psycopg2.connect(
         "dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
     cursor = connection.cursor()
@@ -19,46 +18,46 @@ class dbOperations():
         else:
             return False
 
-    def saveUser(self, newUser):        
-        username=newUser.username
-        useremail=newUser.useremail
-        userpassword=newUser.userpassword
-        userrole=newUser.userrole
-        
+    def saveUser(self, newUser):
+        username = newUser.username
+        useremail = newUser.useremail
+        userpassword = newUser.userpassword
+        userrole = newUser.userrole
+
         query = "insert into users (username,useremail,password,userrole) values('{username}','{useremail}','{userpassword}','{userrole}')".format(
             username=username,
             useremail=useremail,
             userpassword=userpassword,
-            userrole=userrole            
+            userrole=userrole
         )
         self.addToDb(query)
 
     def confirmLogin(self, theUser):
-        usermail=theUser.useremail
-        
+        usermail = theUser.useremail
+
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
-        
+
         if not theResult:
             return False
         else:
             return True
-    
+
     def confirmAdminLogin(self, theMail):
-        usermail=theMail
-        
+        usermail = theMail
+
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
-        
+
         if not theResult:
             return False
         else:
             return True
 
     def getLoginCredentials(self, theUser):
-        usermail=theUser.useremail
+        usermail = theUser.useremail
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
@@ -66,9 +65,9 @@ class dbOperations():
             return None
         else:
             return theResult
-    
+
     def getAdminLoginCredentials(self, theUserEmail):
-        usermail=theUserEmail
+        usermail = theUserEmail
         query = "select * from users where useremail='{usermail}'".format(
             usermail=usermail)
         theResult = self.getFromDb(query)
@@ -81,14 +80,13 @@ class dbOperations():
         self.connection = psycopg2.connect(
             "dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
         self.cursor = self.connection.cursor()
-        requestorid=thisRequest.requestorid
+        requestorid = thisRequest.requestorid
         requesttitle = thisRequest.requesttitle,
         requestdescription = thisRequest.requestdescription,
         requesttype = thisRequest.requesttype,
         requestcreationdate = dt.now(),
         requeststatus = thisRequest.requeststatus
-        requeststatus=int(requeststatus)
-        #print(""+requestorid)
+        requeststatus = int(requeststatus)
 
         self.cursor.execute("INSERT INTO requests (requesttitle,requestdescription,requesttype,requestdate,requeststatus,requestorid) values(%s,%s,%s,%s,%s,%s)", (
             requesttitle,
@@ -102,17 +100,17 @@ class dbOperations():
         self.cursor.close()
 
     def getAllRequest(self, userid):
-        
+
         query = "select * from requests where requestorid='{userid}'".format(
             userid=userid)
         theResult = self.getFromDb(query)
-        
+
         if not theResult:
             return None
         else:
 
             return theResult
-    
+
     def getAllRequestForAdmin(self):
         query = "select * from requests "
         theResult = self.getFromDb(query)
@@ -147,7 +145,7 @@ class dbOperations():
         query = "select * from requests where requestid='{requestid}'".format(
             requestid=requestid)
         theResult = self.getFromDb(query)
-        #print(theResult)
+
         if not theResult:
             return None
         else:
@@ -161,7 +159,7 @@ class dbOperations():
                 requesttype = '{requesttype}' 
             WHERE
             requestid='{requestid}';
-        """.format(requesttitle=requestUpdates['requesttitle'], requestdescription=requestUpdates['requestdescription'], requesttype=requestUpdates['requesttype'],requestid=requestUpdates['requestid'])
+        """.format(requesttitle=requestUpdates['requesttitle'], requestdescription=requestUpdates['requestdescription'], requesttype=requestUpdates['requesttype'], requestid=requestUpdates['requestid'])
         self.addToDb(query)
 
     def verifyRequest(self, requestUpdates):
@@ -170,7 +168,7 @@ class dbOperations():
             SET requeststatus = '{reueststatus}'
             WHERE
             requestid='{requestid}';
-        """.format(reueststatus=requestUpdates['requeststatus'],requestid=requestUpdates['requestid'] )
+        """.format(reueststatus=requestUpdates['requeststatus'], requestid=requestUpdates['requestid'])
         self.addToDb(query)
 
     def getFromDb(self, query):

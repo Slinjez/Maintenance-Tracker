@@ -1,10 +1,8 @@
-#This is where the routes are defined.
-# It may be split into a package of its own (app/views/) with related views grouped together into modules.
 from flask import Flask, jsonify, request, make_response
 import types
 import time
 import datetime
-import pdb
+
 import os
 from app import app
 
@@ -134,10 +132,9 @@ def login():
         response.status_code = 400
         return response
     else:
-        #LoginUser=User('', usermail, userps, '')
-        #pdb.set_trace()
+
         LoginUser = User(useremail=usermail)
-        #pdb.set_trace()
+
         confirmexistingemail = dbmodel.confirmLogin(LoginUser)
         if not confirmexistingemail:
             response = jsonify({"response": "Unregistered email"})
@@ -271,7 +268,7 @@ def getSingleRequest(currentUser, requestid):
     except:
         response = jsonify(
             {"requests": "You have entered an request id"})
-        response.status_code = 405  # Method not allowed
+        response.status_code = 405
         return response
 
     theRequests = dbmodel.getOneRequest(userid, requestid)
@@ -334,7 +331,7 @@ def createNewRequest(currentUser):
             "requestcreationdate": requestcreationdate,
             "requeststatus": 1
         }
-        #print("main user id"+str(requestorid))
+
         myrequest = Requests(requestorid, requesttitle, requestdescription,
                              requesttype, requestcreationdate, requeststatus)
         dbmodel.createRequest(myrequest)
@@ -373,9 +370,9 @@ def updateRequest(currentUser, requestid):
         response.status_code = 500
         return response
     canEditRequests = dbmodel.canEditOneRequest(userid, requestid)
-    isapproved=canEditRequests[0]['requeststatus']
-    
-    if(isapproved!=1):
+    isapproved = canEditRequests[0]['requeststatus']
+
+    if(isapproved != 1):
         response = jsonify(
             {"respons": "Cannot edit this request because it has been verified by an administrator'"})
         response.status_code = 400
@@ -478,7 +475,7 @@ def getAllRequest(currentUser):
 @app.route('/api/v2/requests/<string:requestId>/approve', methods=['PUT'])
 @tokenRequired
 def approveRequest(currentUser, requestId):
-    print("admin put1")
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
@@ -547,7 +544,7 @@ def approveRequest(currentUser, requestId):
 @app.route('/api/v2/requests/<string:requestId>/disapprove', methods=['PUT'])
 @tokenRequired
 def disapproveRequest(currentUser, requestId):
-    print("admin put1")
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
@@ -612,10 +609,11 @@ def disapproveRequest(currentUser, requestId):
             response.status_code = 200
             return response
 
+
 @app.route('/api/v2/requests/<string:requestId>/resolve', methods=['PUT'])
 @tokenRequired
 def resolveRequest(currentUser, requestId):
-    print("admin put1")
+
     if not defaultuserid['userid']:
         return jsonify({"Message": "You can not access this"})
 
@@ -705,6 +703,7 @@ def fiveOo(error):
         "Title": "Server error",
         "Message": "Honestly, I din't see that coming."
     })
+
 
 @app.errorhandler(400)
 def fourOo(error):

@@ -7,9 +7,9 @@
   "tests/test_GetAllReq.py::TestLogIn::test_JSONgood_request": true,
   "tests/test_GetAllReq.py::TestLogIn::test_bad_request": true,
   "tests/test_GetAllReq.py::TestLogIn::test_good_request": true,
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_empty_id": true,
+  "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_good_id": true,
   "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_invalid_id": true,
   "tests/test_GetOneReq.py::TestGetSingleUserRequest::test_missing_request": true,
-  "tests/test_UserViewReq.py::TestGetAllUserRequests": true,
-  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_client_with_no_request": true,
-  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_empty_id": true
+  "tests/test_UserViewReq.py::TestGetAllUserRequests::test_client_with_no_request": true
 }
