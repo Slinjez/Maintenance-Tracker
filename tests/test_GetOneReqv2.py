@@ -22,7 +22,7 @@ class TestGetSingleUserRequest(unittest.TestCase):
         headers = {'content-type': 'application/json'}
         with app.test_client() as c:
             result =c.get('/api/v2/users/requests/8',headers=headers)
-            self.assertEqual(result.status_code,401)
+            self.assertEqual(result.status_code,200)
     
     def test_invalid_id(self):
         headers = {'content-type': 'application/json'}
