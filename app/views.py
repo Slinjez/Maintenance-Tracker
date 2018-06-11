@@ -159,7 +159,7 @@ def login():
                 userrole['role'] = therole
 
                 response = jsonify(
-                    {"token": token, "userid": loginDetails[0]['userid'], "userrole": therole})
+                    {"Response": "you have loged in"},{"token":token})
                 response.status_code = 200
 
                 return response
@@ -538,7 +538,7 @@ def approveRequest(currentUser, requestId):
             }
 
             dbmodel.verifyRequest(requestUpdates)
-            response = jsonify({"requests": "request approved"})
+            response = jsonify({"response": "request approved"})
             response.status_code = 200
             return response
 
@@ -607,7 +607,7 @@ def disapproveRequest(currentUser, requestId):
             }
 
             dbmodel.verifyRequest(requestUpdates)
-            response = jsonify({"requests": "request Disapproved"})
+            response = jsonify({"response": "request Disapproved"})
             response.status_code = 200
             return response
 
