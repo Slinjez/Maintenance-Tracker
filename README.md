@@ -1,4 +1,4 @@
-# Maintenance-Tracker [![Build Status](https://travis-ci.org/Slinjez/Maintenance-Tracker.svg?branch=ch-cleanup-code-158239458)](https://travis-ci.org/Slinjez/Maintenance-Tracker)(https://codeclimate.com/github/Slinjez/Maintenance-Tracker/maintainability)[![Coverage Status](https://coveralls.io/repos/github/Slinjez/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/Slinjez/Maintenance-Tracker?branch=develop)
+# Maintenance-Tracker [![Build Status](https://travis-ci.org/Slinjez/Maintenance-Tracker.svg?branch=ch-cleanup-code-158239458)](https://travis-ci.org/Slinjez/Maintenance-Tracker)[![Coverage Status](https://coveralls.io/repos/github/Slinjez/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/Slinjez/Maintenance-Tracker?branch=develop)
 This is an application that provides users with the ability to reach out to operations or repairs department regarding repair or maintenance requests and monitor the status of their request.
 
 Here are some of its features:
