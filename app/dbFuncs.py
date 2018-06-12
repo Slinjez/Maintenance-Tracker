@@ -183,7 +183,6 @@ class dbOperations():
         return dict_result
         self.connection.commit()
         self.cursor.close()
-        self.cursor.close()
 
     def addToDb(self, query):
         self.connection = psycopg2.connect(
@@ -191,5 +190,4 @@ class dbOperations():
         self.cursor = self.connection.cursor()
         self.cursor.execute(query)
         self.connection.commit()
-        self.cursor.close()
         self.cursor.close()
