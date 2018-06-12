@@ -5,7 +5,8 @@ import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-connection = psycopg2.connect("dbname='maintenancetracker' user='postgres' host='localhost' password='admin'")
+connection = psycopg2.connect("dbname='d7ald91h9iu1kq' user='fhxfwhyrjjqvwc' host='postgres://fhxfwhyrjjqvwc:a566f768bde497878d4487b3f7d6fbdf4e881ebf8df2efa5402a0a1009ecbb7c@ec2-54-243-137-182.compute-1.amazonaws.com:5432/d7ald91h9iu1kq
+' password='a566f768bde497878d4487b3f7d6fbdf4e881ebf8df2efa5402a0a1009ecbb7c'")
 cursor = connection.cursor()
 
 
